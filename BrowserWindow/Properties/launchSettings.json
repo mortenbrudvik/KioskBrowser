@@ -1,8 +1,7 @@
 {
   "profiles": {
     "BrowserWindow": {
-      "commandName": "Project",
-      "commandLineArgs": "http://www.vg.no"
+      "commandName": "Project"
     }
   }
 }

@@ -8,8 +8,31 @@
         Title="MainWindow" Height="450" Width="800"
         WindowStyle="None"
         WindowState="Maximized"
-        WindowStartupLocation="CenterScreen">
-    <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" PreviewKeyDown="DockPanel_PreviewKeyDown">
-        <wpf:WebView2 Name="slimBrowser" />
+        WindowStartupLocation="CenterScreen"
+        Background="GhostWhite">
+    <Window.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding Path=CloseWindowCommand}" />
+    </Window.InputBindings>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+    </Window.Resources>
+    <Grid>
+    <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVisConverter} }">
+        <wpf:WebView2 Name="slimBrowser"/>
     </DockPanel>
+
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Background="LightGray" Visibility="{Binding IsNotInstalled, Converter={StaticResource BoolToVisConverter} }">
+        <Border Background="White" BorderBrush="Gainsboro" BorderThickness="1"  CornerRadius="8,8,3,3">
+            <StackPanel Margin="20" Width="500" >
+                <TextBlock Margin="0,0,0,15" FontSize="20" TextWrapping="WrapWithOverflow">The Kiosk Browser requires Microsoft Edge WebView2 runtime to work. Please click on the link below to download and install.</TextBlock>
+                <Label>
+                    <Hyperlink NavigateUri="https://go.microsoft.com/fwlink/p/?LinkId=2124703" Click="Hyperlink_OnClick" >
+                        <TextBlock Text="Download and install Microsoft Edge WebView2" FontSize="15"/>
+                    </Hyperlink>
+                </Label>
+                <Button FontSize="15" HorizontalAlignment="Right" Margin="0,0,15,10" Command="{Binding Path=CloseWindowCommand}" Width="60">Close</Button>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+    </Grid>
 </Window>

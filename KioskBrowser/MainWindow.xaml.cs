@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
-using System.Windows.Input;
+using KioskBrowser;
 
 namespace BrowserWindow
 {
@@ -9,6 +10,8 @@ namespace BrowserWindow
         public MainWindow()
         {
             InitializeComponent();
+
+            DataContext =  new MainViewModel();
         }
 
         protected override void OnContentRendered(EventArgs e)
@@ -48,10 +51,13 @@ namespace BrowserWindow
             Uri.TryCreate(uriName, UriKind.Absolute, out var uriResult) 
             && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
 
-        private void DockPanel_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
         {
-            if(e.Key == Key.Escape)
-                Application.Current.Shutdown();
+            Process.Start(new ProcessStartInfo()
+            {
+                FileName = "https://go.microsoft.com/fwlink/p/?LinkId=2124703",
+                UseShellExecute = true
+            });
         }
     }
 }

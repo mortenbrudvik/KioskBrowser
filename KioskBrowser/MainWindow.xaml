@@ -18,7 +18,7 @@
     </Window.Resources>
     <Grid>
     <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVisConverter} }">
-        <wpf:WebView2 Name="slimBrowser"/>
+        <wpf:WebView2 Name="kioskBrowser"/>
     </DockPanel>
 
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Background="LightGray" Visibility="{Binding IsNotInstalled, Converter={StaticResource BoolToVisConverter} }">

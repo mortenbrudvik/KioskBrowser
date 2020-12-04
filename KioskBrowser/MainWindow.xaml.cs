@@ -32,7 +32,7 @@ namespace KioskBrowser
 
             try
             {
-                slimBrowser.Source = new Uri(url);
+                kioskBrowser.Source = new Uri(url);
             }
             catch (Exception)
             {

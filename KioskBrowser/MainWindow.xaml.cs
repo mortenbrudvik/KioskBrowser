@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
-using KioskBrowser;
 
-namespace BrowserWindow
+namespace KioskBrowser
 {
     public partial class MainWindow : Window
     {

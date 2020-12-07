@@ -16,6 +16,9 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
     </Window.Resources>
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo Overlay="/Images/globe.png" Description="Kiosk Browser" />
+    </Window.TaskbarItemInfo>
     <Grid>
     <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVisConverter} }">
         <wpf:WebView2 Name="kioskBrowser"/>

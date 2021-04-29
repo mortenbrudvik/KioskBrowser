@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Images\app.ico</ApplicationIcon>
     <AssemblyTitle>Kiosk Browser</AssemblyTitle>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

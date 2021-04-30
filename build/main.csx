@@ -21,7 +21,6 @@ var assemblyInformationalVersion = "1.0 Alpha"; // Product version - the version
 
 var artifactsDir = "artifacts";
 var publishDir = $"{artifactsDir}/publish_winx86";
-var msbuildPath = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe";
 
 ////////////////////////////////////////////////////////////////////////////////
 // OPTIONS
@@ -47,7 +46,7 @@ Target("build-solution", DependsOn("clean-solution"), () => {
 
 Target("build-msi", 
     DependsOn("build-solution"), () => {
-    Run(msbuildPath, @"..\Installer\");});
+    Run(MSBuildPath, @"..\Installer\");});
 
 ////////////////////////////////////////////////////////////////////////////////
 // EXECUTION

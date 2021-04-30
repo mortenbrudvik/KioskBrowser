@@ -1,3 +1,5 @@
+#load "scripts\utils.csx"
+
 #r "nuget: SimpleExec, 7.0.0"
 #r "nuget: CommandLineParser, 2.8.0"
 #r "nuget: Bullseye, 3.7.0"
@@ -21,7 +23,6 @@ var artifactsDir = "artifacts";
 var publishDir = $"{artifactsDir}/publish_winx86";
 var msbuildPath = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe";
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // OPTIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -38,10 +39,7 @@ Options options;
 // TARGETS
 ////////////////////////////////////////////////////////////////////////////////
 
-Target("clean-solution", () => {
-    if( Directory.Exists(artifactsDir))
-        Directory.Delete(artifactsDir, recursive: true);
-});
+Target("clean-solution", () => DeleteDirectory(artifactsDir));
 
 Target("build-solution", DependsOn("clean-solution"), () => {
     Run("dotnet", $@"publish ..\ -c Release -r win-x86 -o {publishDir} /p:FileVersion={assemblyFileVersion} /p:AssemblyVersion={assemblyVersion} /p:InformationalVersion=""{assemblyInformationalVersion}"" ");

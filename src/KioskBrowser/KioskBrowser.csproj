@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Images\app.ico" />
+    <EmbeddedResource Include="Images\app.ico" />
     <Resource Include="Images\globe.png" />
   </ItemGroup>
 

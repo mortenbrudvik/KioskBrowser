@@ -3,6 +3,9 @@
 
   <Fragment>
     
+    <Property Id="ALLUSERS" Secure="yes" Value="2"/>
+    <Property Id="MSIINSTALLPERUSER" Secure="yes" Value="1" />
+
     <Directory Id="TARGETDIR" Name="SourceDir">
 
       <!-- Start Menu -->

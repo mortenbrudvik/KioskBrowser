@@ -24,7 +24,8 @@
     <!-- Provide package details -->
     <Package InstallerVersion="200" 
              Compressed="yes" 
-             InstallScope="perMachine"
+             InstallScope="perUser"
+             InstallPrivileges="limited"
              Platform="$(var.Platform)"
              Manufacturer="!(loc.Company)" 
              Description="!(loc.Description)"

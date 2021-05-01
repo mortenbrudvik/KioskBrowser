@@ -30,9 +30,12 @@
         
         <!--Remove start menu items -->
         <RemoveFolder Id="RemoveStartMenu" Directory="InstallProgramMenuFolder" On="uninstall" />
-        
-      </Component>
 
+        <!-- Set the user environment path for the install path to kioskbrowser.exe -->  
+        <Environment Id="PATH" Name="PATH" Value="[INSTALLFOLDER]" Permanent="no"  Part="last" Action="set" System="no" />
+
+      </Component>
+      
     </DirectoryRef>
 
   </Fragment>

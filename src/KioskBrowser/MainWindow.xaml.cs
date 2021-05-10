@@ -29,18 +29,13 @@ namespace KioskBrowser
                 return;
             }
             var url = args[1];
-            if (!IsUriValid(url))
-            {
-                Shutdown("Url is not on a valid format. Browser window will close.");
-                return;
-            }
 
             try
             {
                 var webView2Environment = await CoreWebView2Environment.CreateAsync(null, _cacheFolderPath);
                 await kioskBrowser.EnsureCoreWebView2Async(webView2Environment);
                 
-                kioskBrowser.Source = new Uri(url);
+                kioskBrowser.Source = new UriBuilder(url).Uri;
             }
             catch (Exception)
             {

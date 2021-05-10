@@ -21,6 +21,10 @@ namespace KioskBrowser
         protected override async void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
+            
+            if (WebView2Install.GetInfo().InstallType == InstallType.NotInstalled)
+                return;
+            
             var args = Environment.GetCommandLineArgs();
 
             if (args.Length != 2)

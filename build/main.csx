@@ -46,7 +46,7 @@ Target("build-solution", DependsOn("clean-solution"), () => {
 
 Target("build-msi", 
     DependsOn("build-solution"), () => {
-    Run(MSBuildPath, @"..\Installer\");});
+    Run(MSBuildPath, $@"..\Installer\ /p:ArtifactsPath=""..\build\{artifactsDir}"" ");});
 
 ////////////////////////////////////////////////////////////////////////////////
 // EXECUTION

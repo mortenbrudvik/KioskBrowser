@@ -83,6 +83,6 @@
       <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
     </GetAssemblyIdentity>
     <!-- Move final MSI -->
-    <Exec Command="move bin\$(Configuration)\$(OutputName).msi ..\build\artifacts\KioskBrowser-%(AssemblyVersion.Version)-$(Configuration)-$(Platform).msi" />
+    <Exec Command="move bin\$(Configuration)\$(OutputName).msi $(ArtifactsPath)\KioskBrowser-%(AssemblyVersion.Version)-$(Configuration)-$(Platform).msi" />
   </Target>
 </Project>

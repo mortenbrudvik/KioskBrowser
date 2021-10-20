@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using CommandLine;
 using Microsoft.Web.WebView2.Core;
 
 namespace KioskBrowser
@@ -18,6 +19,19 @@ namespace KioskBrowser
             _cacheFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "KioskBrowser");
         }
 
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+
+            var args = Environment.GetCommandLineArgs();
+            Parser.Default.ParseArguments<Options>(args)
+                .WithParsed(o =>
+                {
+                    if (!o.EnableTitlebar)
+                        Titlebar.Visibility = Visibility.Collapsed;
+                });
+        }
+
         protected override async void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
@@ -27,9 +41,9 @@ namespace KioskBrowser
             
             var args = Environment.GetCommandLineArgs();
 
-            if (args.Length != 2)
+            if (args.Length < 2)
             {
-                Shutdown("Missing url parameter. Browser window will close.");
+                Shutdown("No parameters. Browser window will close.");
                 return;
             }
             var url = args[1];
@@ -65,5 +79,13 @@ namespace KioskBrowser
                 UseShellExecute = true
             });
         }
+    }
+    
+    public class Options
+    {
+        [Option('t', "enable-titlebar",
+            Required = false, Default = false, HelpText = "Enable Title bar")]
+        public bool EnableTitlebar { get; set; }
+
     }
 }

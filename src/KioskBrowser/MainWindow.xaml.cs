@@ -30,6 +30,8 @@ namespace KioskBrowser
                     if (!o.EnableTitlebar)
                         Titlebar.Visibility = Visibility.Collapsed;
                 });
+            
+            SetButtonStates();
         }
 
         protected override async void OnContentRendered(EventArgs e)
@@ -83,8 +85,23 @@ namespace KioskBrowser
         private void OnMinimizeButtonClick(object sender, RoutedEventArgs e) =>
             WindowState = WindowState.Minimized;
 
-        private void OnMaximizeRestoreButtonClick(object sender, RoutedEventArgs e) =>
+        protected override void OnStateChanged(EventArgs e)
+        {
+            base.OnStateChanged(e);
+
+            SetButtonStates();
+        }
+
+        private void SetButtonStates()
+        {
+            restoreButton.Visibility = WindowState == WindowState.Maximized ? Visibility.Visible : Visibility.Collapsed;
+            maximizeButton.Visibility = WindowState == WindowState.Maximized ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        private void OnMaximizeRestoreButtonClick(object sender, RoutedEventArgs e)
+        {
             WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        }
 
         private void OnCloseButtonClick(object sender, RoutedEventArgs e) => Close();
     }

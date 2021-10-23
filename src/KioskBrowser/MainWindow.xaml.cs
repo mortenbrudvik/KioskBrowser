@@ -18,7 +18,7 @@ namespace KioskBrowser
         {
             InitializeComponent();
 
-            DataContext =  new MainViewModel();
+            DataContext =  new MainViewModel(CloseWindow);
             _cacheFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "KioskBrowser");
         }
 
@@ -81,15 +81,17 @@ namespace KioskBrowser
             _refreshContentTimer.Start();
         }
 
+        private void CloseWindow()
+        {
+            if( Titlebar.Visibility != Visibility.Visible)
+                Application.Current.Shutdown();
+        }
+
         private void Shutdown(string message, string caption = "Information")
         {
             MessageBox.Show(this, message, caption);
             Application.Current.Shutdown();
         }
-
-        private static bool IsUriValid(string uriName) =>
-            Uri.TryCreate(uriName, UriKind.Absolute, out var uriResult) 
-            && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
 
         private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
         {

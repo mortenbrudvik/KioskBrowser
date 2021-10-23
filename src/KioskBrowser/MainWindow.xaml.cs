@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Threading;
 using CommandLine;
 using Microsoft.Web.WebView2.Core;
 
@@ -10,6 +11,8 @@ namespace KioskBrowser
     public partial class MainWindow : Window
     {
         private readonly string _cacheFolderPath;
+        private DispatcherTimer _refreshContentTimer;
+        private double _contentRefreshIntervalInSeconds = 60;
 
         public MainWindow()
         {
@@ -18,6 +21,8 @@ namespace KioskBrowser
             DataContext =  new MainViewModel();
             _cacheFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "KioskBrowser");
         }
+
+        private bool RefreshContentEnabled { get; set; }
 
         protected override void OnInitialized(EventArgs e)
         {
@@ -29,6 +34,8 @@ namespace KioskBrowser
                 {
                     if (!o.EnableTitlebar)
                         Titlebar.Visibility = Visibility.Collapsed;
+
+                    RefreshContentEnabled = o.EnableAutomaticContentRefresh;
                 });
             
             SetButtonStates();
@@ -56,11 +63,22 @@ namespace KioskBrowser
                 await kioskBrowser.EnsureCoreWebView2Async(webView2Environment);
                 
                 kioskBrowser.Source = new UriBuilder(url).Uri;
+                
+                if(RefreshContentEnabled)
+                    StartAutomaticContentRefresh();
             }
             catch (Exception)
             {
                 Shutdown("An error occurred when starting the browser. Browser window will close.", "Error Occurred");
             }
+        }
+
+        private void StartAutomaticContentRefresh()
+        {
+            _refreshContentTimer = new DispatcherTimer();
+            _refreshContentTimer.Tick += (_, _) => kioskBrowser.Reload();
+            _refreshContentTimer.Interval = TimeSpan.FromSeconds(_contentRefreshIntervalInSeconds);
+            _refreshContentTimer.Start();
         }
 
         private void Shutdown(string message, string caption = "Information")
@@ -111,6 +129,10 @@ namespace KioskBrowser
         [Option('t', "enable-titlebar",
             Required = false, Default = false, HelpText = "Enable Title bar")]
         public bool EnableTitlebar { get; set; }
+        
+        [Option('r', "enable-content-refresh",
+            Required = false, Default = false, HelpText = "Enable automatic content refresh every 60 seconds")]
+        public bool EnableAutomaticContentRefresh { get; set; }
 
     }
 }

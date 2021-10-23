@@ -79,6 +79,14 @@ namespace KioskBrowser
                 UseShellExecute = true
             });
         }
+
+        private void OnMinimizeButtonClick(object sender, RoutedEventArgs e) =>
+            WindowState = WindowState.Minimized;
+
+        private void OnMaximizeRestoreButtonClick(object sender, RoutedEventArgs e) =>
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+
+        private void OnCloseButtonClick(object sender, RoutedEventArgs e) => Close();
     }
     
     public class Options

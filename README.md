@@ -8,4 +8,12 @@ If WebView2 has not been installed before, it will display an info message with 
 KioskBrowser.exe "http://www.google.com"
 ```
 
-Close window by pressing ESC. 
+**Options:**
+
+| Option | Description |
+| --- | --- |
+| <code>-t, --enable-titlebar</code>| Enable Title bar |
+| <code>-r, --enable-content-refresh</code> |  (default: 60 seconds) Enable automatic refresh of content |
+| <code>--content-refresh-interval</code> | (min: 10, max: 3600) Content refresh interval in seconds |
+
+Close window by pressing ESC. (Disabled when titlebar is enabled)

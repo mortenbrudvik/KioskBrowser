@@ -13,9 +13,7 @@
         Background="#323232">
     
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="32" 
-                      ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}" />
-        
+        <WindowChrome CaptionHeight="32" ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}" />
     </WindowChrome.WindowChrome>
     
     <Window.InputBindings>
@@ -24,7 +22,6 @@
     
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
-        
         <SolidColorBrush x:Key="WindowBrush" Color="Black" />
         <SolidColorBrush x:Key="WindowTextBrush" Color="White" />
         <SolidColorBrush x:Key="WindowInactiveBorderBrush" Color="#333333" />
@@ -35,7 +32,6 @@
         <SolidColorBrush x:Key="MouseOverBackgroundBrush" Color="#1E4B60" />
         <SolidColorBrush x:Key="MouseOverOverlayBackgroundBrush" Color="#33FFFFFF" />
         <SolidColorBrush x:Key="PressedOverlayBackgroundBrush" Color="#44FFFFFF" />
-
         
         <Style x:Key="TitleBarButtonStyle" TargetType="Button">
             <Setter Property="Foreground" Value="{DynamicResource WindowTextBrush}" />
@@ -215,7 +211,7 @@
             
             <!-- WebView -->
             <DockPanel Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVisConverter} }">
-                <wpf:WebView2 Name="kioskBrowser"/>
+                <wpf:WebView2 Name="WebView"/>
             </DockPanel>
 
             <!-- Download install message, when WebView is not installed -->

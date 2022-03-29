@@ -4,6 +4,7 @@
 #r "nuget: CommandLineParser, 2.8.0"
 #r "nuget: Bullseye, 3.7.0"
 
+using System;
 using System.IO;
 using CommandLine;
 using static SimpleExec.Command;
@@ -15,9 +16,12 @@ using static System.Console;
 ////////////////////////////////////////////////////////////////////////////////
 
 // Versioning (major.minor.patch.build)
-var assemblyVersion = "1.0.0"; // Internal to the CLR, is not exposed
-var assemblyFileVersion = "1.0.0.0"; // Important for the deployment and windows to differenciate the files
-var assemblyInformationalVersion = "1.0 Alpha"; // Product version - the version that you would use on your website etc.
+var productVersion = "1.0";
+var patchNumber = "0";
+var buildNumber = "0"; 
+var assemblyVersion = $"{productVersion}.{patchNumber}"; // Internal to the CLR, is not exposed
+var assemblyFileVersion = $"{productVersion}.{patchNumber}.{buildNumber}"; // Important for the deployment and windows to differentiate the files
+var assemblyInformationalVersion = $"{productVersion} Release"; // Product version - the version that you would use on your website etc.
 
 var artifactsDir = "artifacts";
 var publishDir = $"{artifactsDir}/publish_winx86";

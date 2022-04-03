@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using CommandLine;
+using KioskBrowser.WebView;
 using Microsoft.Web.WebView2.Core;
 
 namespace KioskBrowser;
@@ -11,11 +12,15 @@ namespace KioskBrowser;
 public partial class MainWindow
 {
     private readonly DispatcherTimer _refreshContentTimer = new();
+    private readonly WebViewComponent _webViewComponent;
+
     public MainWindow()
     {
         InitializeComponent();
 
-        DataContext =  new MainViewModel(CloseWindow);
+        _webViewComponent = new WebViewComponent();
+        
+        DataContext =  new MainViewModel(_webViewComponent, CloseWindow);
     }
 
     private static string CacheFolderPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "KioskBrowser");
@@ -48,7 +53,7 @@ public partial class MainWindow
             if (eventArgs.Key == Key.Escape && Titlebar.Visibility != Visibility.Visible)
                 CloseWindow(); };
             
-        if (WebView2Install.GetInfo().InstallType == InstallType.NotInstalled)
+        if (!_webViewComponent.IsInstalled)
             return;
             
         var args = Environment.GetCommandLineArgs();

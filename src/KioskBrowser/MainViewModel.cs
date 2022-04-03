@@ -1,16 +1,20 @@
-﻿namespace KioskBrowser;
+﻿using KioskBrowser.WebView;
+
+namespace KioskBrowser;
 
 public class MainViewModel
 {
+    private readonly WebViewComponent _webViewComponent;
     private readonly Action _close;
 
-    public MainViewModel(Action close)
+    public MainViewModel(WebViewComponent webViewComponent, Action close)
     {
+        _webViewComponent = webViewComponent;
         _close = close;
     }
-    public DelegateCommand CloseWindowCommand => new(x => { _close(); });
+    public DelegateCommand CloseWindowCommand => new(_ => { _close(); });
 
     public string Title => "Kiosk Browser";
-    public bool IsInstalled => WebView2Install.GetInfo().InstallType != InstallType.NotInstalled;
+    public bool IsInstalled => _webViewComponent.IsInstalled;
     public bool IsNotInstalled => !IsInstalled;
 }

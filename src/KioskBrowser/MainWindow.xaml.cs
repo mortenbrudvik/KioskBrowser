@@ -1,10 +1,8 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using CommandLine;
-using KioskBrowser.WebView;
 using Microsoft.Web.WebView2.Core;
 
 namespace KioskBrowser;
@@ -12,15 +10,12 @@ namespace KioskBrowser;
 public partial class MainWindow
 {
     private readonly DispatcherTimer _refreshContentTimer = new();
-    private readonly WebViewComponent _webViewComponent;
 
     public MainWindow()
     {
         InitializeComponent();
-
-        _webViewComponent = new WebViewComponent();
         
-        DataContext =  new MainViewModel(_webViewComponent, CloseWindow);
+        DataContext =  new MainViewModel(Close);
     }
 
     private static string CacheFolderPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "KioskBrowser");
@@ -49,13 +44,11 @@ public partial class MainWindow
     {
         base.OnContentRendered(e);
 
+        // Close the window when the escape key is pressed (if the title bar is hidden)
         KeyDown += (_, eventArgs) => {
             if (eventArgs.Key == Key.Escape && Titlebar.Visibility != Visibility.Visible)
                 CloseWindow(); };
-            
-        if (!_webViewComponent.IsInstalled)
-            return;
-            
+
         var args = Environment.GetCommandLineArgs();
 
         if (args.Length < 2)
@@ -100,11 +93,6 @@ public partial class MainWindow
         Application.Current.Shutdown();
     }
 
-    private void Hyperlink_OnClick(object sender, RoutedEventArgs e) =>
-        Process.Start(new ProcessStartInfo {
-            FileName = "https://go.microsoft.com/fwlink/p/?LinkId=2124703",
-            UseShellExecute = true});
-
     private void OnMinimizeButtonClick(object sender, RoutedEventArgs e) =>
         WindowState = WindowState.Minimized;
 
@@ -123,19 +111,4 @@ public partial class MainWindow
 
     private void OnMaximizeRestoreButtonClick(object sender, RoutedEventArgs e) =>
         WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-
-    private void OnCloseButtonClick(object sender, RoutedEventArgs e) => Close();
-}
-    
-public class Options
-{
-
-    [Option('t', "enable-titlebar", Required = false, Default = false, HelpText = "Enable Title bar")]
-    public bool EnableTitlebar { get; set; }
-        
-    [Option('r', "enable-content-refresh", Required = false, Default = false, HelpText = "(default: 60 seconds) Enable automatic refresh of content")]
-    public bool EnableAutomaticContentRefresh { get; set; }
-        
-    [Option("content-refresh-interval", Required = false, Default = 60, HelpText = "(min: 10, max: 3600) Content refresh interval in seconds")]
-    public int ContentRefreshIntervalInSeconds { get; set; }
 }

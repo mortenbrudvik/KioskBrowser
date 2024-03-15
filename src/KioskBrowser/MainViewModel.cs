@@ -1,20 +1,34 @@
-﻿using KioskBrowser.WebView;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.Input;
 
 namespace KioskBrowser;
 
-public class MainViewModel
+public sealed class MainViewModel : INotifyPropertyChanged
 {
-    private readonly WebViewComponent _webViewComponent;
-    private readonly Action _close;
 
-    public MainViewModel(WebViewComponent webViewComponent, Action close)
+    public MainViewModel(Action close)
     {
-        _webViewComponent = webViewComponent;
-        _close = close;
+        CloseCommand = new RelayCommand(close);
     }
-    public DelegateCommand CloseWindowCommand => new(_ => { _close(); });
+
+    public RelayCommand CloseCommand { get; set; }
 
     public string Title => "Kiosk Browser";
-    public bool IsInstalled => _webViewComponent.IsInstalled;
-    public bool IsNotInstalled => !IsInstalled;
+    
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
+    }
 }

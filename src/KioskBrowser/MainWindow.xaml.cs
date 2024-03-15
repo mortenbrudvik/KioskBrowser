@@ -47,7 +47,7 @@ public partial class MainWindow
         // Close the window when the escape key is pressed (if the title bar is hidden)
         KeyDown += (_, eventArgs) => {
             if (eventArgs.Key == Key.Escape && Titlebar.Visibility != Visibility.Visible)
-                CloseWindow(); };
+                Close(); };
 
         var args = Environment.GetCommandLineArgs();
 
@@ -81,16 +81,10 @@ public partial class MainWindow
         _refreshContentTimer.Start();
     }
 
-    private void CloseWindow()
-    {
-        if( Titlebar.Visibility != Visibility.Visible)
-            Application.Current.Shutdown();
-    }
-
     private void Shutdown(string caption, string message)
     {
         MessageBox.Show(this, message, caption);
-        Application.Current.Shutdown();
+        Close();
     }
 
     private void OnMinimizeButtonClick(object sender, RoutedEventArgs e) =>

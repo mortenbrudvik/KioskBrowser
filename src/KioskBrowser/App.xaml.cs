@@ -1,8 +1,5 @@
-﻿using System.Windows;
+﻿namespace KioskBrowser;
 
-namespace KioskBrowser;
-
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
-public partial class App { }
+public partial class App
+{
+}

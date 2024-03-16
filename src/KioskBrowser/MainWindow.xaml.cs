@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -10,17 +10,16 @@ namespace KioskBrowser;
 public partial class MainWindow
 {
     private readonly DispatcherTimer _refreshContentTimer = new();
+    private readonly MainViewModel _viewModel;
 
     public MainWindow()
     {
-        InitializeComponent();
-        
-        DataContext =  new MainViewModel(Close);
-    }
+        _viewModel = new MainViewModel(Close);
 
-    private static string CacheFolderPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "KioskBrowser");
-    private bool RefreshContentEnabled { get; set; }
-    private double RefreshContentIntervalInSeconds { get; set; }
+        InitializeComponent();
+
+        DataContext = _viewModel;
+    }
 
     protected override void OnInitialized(EventArgs e)
     {
@@ -30,79 +29,57 @@ public partial class MainWindow
         Parser.Default.ParseArguments<Options>(args)
             .WithParsed(o =>
             {
-                if (!o.EnableTitlebar)
-                    Titlebar.Visibility = Visibility.Collapsed;
-
-                RefreshContentEnabled = o.EnableAutomaticContentRefresh;
-                RefreshContentIntervalInSeconds = Math.Max(Math.Min(o.ContentRefreshIntervalInSeconds, 3600), 10);
+                if(!o.EnableTitlebar) 
+                    Titlebar.Height = 0; 
+                     
+                _viewModel.RefreshContentEnabled = o.EnableAutomaticContentRefresh;
+                _viewModel.RefreshContentIntervalInSeconds = Math.Max(Math.Min(o.ContentRefreshIntervalInSeconds, 3600), 10);
             });
-            
-        SetButtonStates();
     }
 
     protected override async void OnContentRendered(EventArgs e)
     {
         base.OnContentRendered(e);
 
-        // Close the window when the escape key is pressed (if the title bar is hidden)
-        KeyDown += (_, eventArgs) => {
-            if (eventArgs.Key == Key.Escape && Titlebar.Visibility != Visibility.Visible)
-                Close(); };
+        //Close the window when the escape key is pressed (if the title bar is hidden)
+        KeyDown += (_, eventArgs) =>
+        {
+            if (eventArgs.Key == Key.Escape && Titlebar.Height == 0)
+                Close();
+        };
 
         var args = Environment.GetCommandLineArgs();
 
         if (args.Length < 2)
         {
-            Shutdown("Information","No parameters. Browser window will close.");
+            MessageBox.Show(this, "Information", "No parameters. Browser window will close.");
+            Application.Current.Shutdown();
             return;
         }
+
         var url = args[1];
 
         try
         {
-            var environment = await CoreWebView2Environment.CreateAsync(null, CacheFolderPath);
+            var environment = await CoreWebView2Environment.CreateAsync(null, _viewModel.CacheFolderPath);
             await WebView.EnsureCoreWebView2Async(environment);
                 
             WebView.Source = new UriBuilder(url).Uri;
                 
-            if(RefreshContentEnabled)
+            if (_viewModel.RefreshContentEnabled)
                 StartAutomaticContentRefresh();
         }
         catch (Exception)
         {
-            Shutdown("Error Occurred", "An error occurred when starting the browser. Browser window will close.");
+            MessageBox.Show(this, "Error Occurred", "An error occurred when starting the browser. Browser window will close.");
+            Application.Current.Shutdown();
         }
     }
 
     private void StartAutomaticContentRefresh()
     {
         _refreshContentTimer.Tick += (_, _) => WebView.Reload();
-        _refreshContentTimer.Interval = TimeSpan.FromSeconds(RefreshContentIntervalInSeconds);
+        _refreshContentTimer.Interval = TimeSpan.FromSeconds(_viewModel.RefreshContentIntervalInSeconds);
         _refreshContentTimer.Start();
     }
-
-    private void Shutdown(string caption, string message)
-    {
-        MessageBox.Show(this, message, caption);
-        Close();
-    }
-
-    private void OnMinimizeButtonClick(object sender, RoutedEventArgs e) =>
-        WindowState = WindowState.Minimized;
-
-    protected override void OnStateChanged(EventArgs e)
-    {
-        base.OnStateChanged(e);
-
-        SetButtonStates();
-    }
-
-    private void SetButtonStates()
-    {
-        restoreButton.Visibility = WindowState == WindowState.Maximized ? Visibility.Visible : Visibility.Collapsed;
-        maximizeButton.Visibility = WindowState == WindowState.Maximized ? Visibility.Collapsed : Visibility.Visible;
-    }
-
-    private void OnMaximizeRestoreButtonClick(object sender, RoutedEventArgs e) =>
-        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
 }

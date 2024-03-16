@@ -1,25 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Images\app.ico</ApplicationIcon>
     <AssemblyTitle>Kiosk Browser</AssemblyTitle>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors/>
+    <TargetFramework>net6.0-windows</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.664.37" />
+    <PackageReference Include="WPF-UI" Version="3.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Images\app.ico" />
-    <Resource Include="Images\globe.png" />
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2365.46" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Remove="Images\app.png" />
+    <Resource Include="Images\app.png" />
   </ItemGroup>
 
 </Project>

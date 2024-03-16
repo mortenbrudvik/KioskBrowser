@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System;
+using System.IO;
+using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 
 namespace KioskBrowser;
 
-public sealed class MainViewModel : INotifyPropertyChanged
+public class MainViewModel : ViewModelBase
 {
 
     public MainViewModel(Action close)
@@ -16,19 +16,14 @@ public sealed class MainViewModel : INotifyPropertyChanged
     public RelayCommand CloseCommand { get; set; }
 
     public string Title => "Kiosk Browser";
+    public BitmapImage? TaskbarOverlayImage => null;
     
-    public event PropertyChangedEventHandler? PropertyChanged;
+    public string CacheFolderPath =>
+        Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "KioskBrowser");
 
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
 
-    private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        OnPropertyChanged(propertyName);
-        return true;
-    }
+    public bool RefreshContentEnabled { get; set; }
+    public double RefreshContentIntervalInSeconds { get; set; }
 }

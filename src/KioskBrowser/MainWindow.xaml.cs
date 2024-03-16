@@ -62,6 +62,22 @@ public partial class MainWindow
         {
             var environment = await CoreWebView2Environment.CreateAsync(null, _viewModel.CacheFolderPath);
             await WebView.EnsureCoreWebView2Async(environment);
+            
+            WebView.CoreWebView2.DocumentTitleChanged += (_, _) =>
+            {
+                var title = WebView.CoreWebView2.DocumentTitle;
+                if(!string.IsNullOrEmpty(title))
+                    _viewModel.Title = title;
+            };
+            
+            WebView.CoreWebView2.FaviconChanged += async (_, _) =>
+            {
+                var faviconUri = WebView.CoreWebView2.FaviconUri;
+
+                if (faviconUri == null) return;
+                var image = await ImageUtils.DownloadFaviconAsync(faviconUri);
+                _viewModel.TitlebarIcon = image;
+            };
                 
             WebView.Source = new UriBuilder(url).Uri;
                 

@@ -9,14 +9,13 @@
     <AssemblyTitle>Kiosk Browser</AssemblyTitle>
     <ApplicationIcon>Images\app.ico</ApplicationIcon>
     <TreatWarningsAsErrors/>
+    
   </PropertyGroup>
-
 
   <ItemGroup>
     <None Remove="Images\app.png" />
     <Resource Include="Images\app.png" />
   </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />

@@ -16,7 +16,7 @@ using static System.Console;
 ////////////////////////////////////////////////////////////////////////////////
 
 // Versioning (major.minor.patch.build)
-var productVersion = "1.0";
+var productVersion = "1.1";
 var patchNumber = "0";
 var buildNumber = "0"; 
 var assemblyVersion = $"{productVersion}.{patchNumber}"; // Internal to the CLR, is not exposed
@@ -24,7 +24,7 @@ var assemblyFileVersion = $"{productVersion}.{patchNumber}.{buildNumber}"; // Im
 var assemblyInformationalVersion = $"{productVersion} Release"; // Product version - the version that you would use on your website etc.
 
 var artifactsDir = "artifacts";
-var publishDir = $"{artifactsDir}/publish_winx86";
+var publishDir = $"{artifactsDir}/publish";
 
 ////////////////////////////////////////////////////////////////////////////////
 // OPTIONS
@@ -45,12 +45,12 @@ Options options;
 Target("clean-solution", () => DeleteDirectory(artifactsDir));
 
 Target("build-solution", DependsOn("clean-solution"), () => {
-    Run("dotnet", $@"publish ..\ -c Release -r win-x86 -o {publishDir} /p:FileVersion={assemblyFileVersion} /p:AssemblyVersion={assemblyVersion} /p:InformationalVersion=""{assemblyInformationalVersion}"" ");
+    Run("dotnet", $@"publish ..\ -c Release -r win-x64 -o {publishDir} /p:FileVersion={assemblyFileVersion} /p:AssemblyVersion={assemblyVersion} /p:InformationalVersion=""{assemblyInformationalVersion}"" ");
 });
 
 Target("build-msi", 
     DependsOn("build-solution"), () => {
-    Run(MSBuildPath, $@"..\Installer\ /p:ArtifactsPath=""..\build\{artifactsDir}"" ");});
+    Run(MSBuildPath, $@"..\Installer\ /p:Configuration=Release ");});
 
 ////////////////////////////////////////////////////////////////////////////////
 // EXECUTION

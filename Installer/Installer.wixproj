@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" InitialTargets="EnsureWixToolsetInstalled" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>a6ca9e35-1a5a-4244-b358-48cb2d13c6ae</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
@@ -67,22 +67,22 @@
   </Target>
   <Target Name="BeforeBuild">
     <!-- Get assembly version -->
-    <GetAssemblyIdentity AssemblyFiles="..\build\artifacts\publish_win$(Platform)\KioskBrowser.dll">
+    <GetAssemblyIdentity AssemblyFiles="..\build\artifacts\publish\KioskBrowser.dll">
       <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
     </GetAssemblyIdentity>
     <!-- Define some variables we need -->
     <PropertyGroup>
-      <DefineConstants>BuildVersion=%(AssemblyVersion.Version);BasePath=..\build\artifacts\publish_win$(Platform)</DefineConstants>
+      <DefineConstants>BuildVersion=%(AssemblyVersion.Version);BasePath=..\build\artifacts\publish</DefineConstants>
     </PropertyGroup>
     <!-- Harvest file components from publish folder -->
-    <HeatDirectory OutputFile="ComponentsGenerated.wxs" DirectoryRefId="INSTALLFOLDER" ComponentGroupName="PublishedComponents" SuppressCom="true" Directory="..\build\artifacts\publish_win$(Platform)" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" AutoGenerateGuids="false" GenerateGuidsNow="true" ToolPath="$(WixToolPath)" PreprocessorVariable="var.BasePath" />
+    <HeatDirectory OutputFile="ComponentsGenerated.wxs" DirectoryRefId="INSTALLFOLDER" ComponentGroupName="PublishedComponents" SuppressCom="true" Directory="..\build\artifacts\publish" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" AutoGenerateGuids="false" GenerateGuidsNow="true" ToolPath="$(WixToolPath)" PreprocessorVariable="var.BasePath" />
   </Target>
   <Target Name="AfterBuild">
     <!-- Get assembly version -->
-    <GetAssemblyIdentity AssemblyFiles="..\build\artifacts\publish_win$(Platform)\KioskBrowser.dll">
+    <GetAssemblyIdentity AssemblyFiles="..\build\artifacts\publish\KioskBrowser.dll">
       <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
     </GetAssemblyIdentity>
     <!-- Move final MSI -->
-    <Exec Command="move bin\$(Configuration)\$(OutputName).msi $(ArtifactsPath)\KioskBrowser-%(AssemblyVersion.Version)-$(Configuration)-$(Platform).msi" />
+    <Exec Command="move bin\$(Configuration)\$(OutputName).msi ..\build\artifacts\KioskBrowser-%(AssemblyVersion.Version)-$(Configuration)-$(Platform).msi" />
   </Target>
 </Project>

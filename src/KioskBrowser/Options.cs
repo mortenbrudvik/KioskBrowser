@@ -4,7 +4,6 @@ namespace KioskBrowser;
 
 public class Options
 {
-
     [Option('t', "enable-titlebar", Required = false, Default = false, HelpText = "Enable Title bar")]
     public bool EnableTitlebar { get; set; }
         

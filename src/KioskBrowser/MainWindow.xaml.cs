@@ -77,6 +77,7 @@ public partial class MainWindow
                 if (faviconUri == null) return;
                 var image = await ImageUtils.DownloadFaviconAsync(faviconUri);
                 _viewModel.TitlebarIcon = image;
+                _viewModel.TaskbarOverlayImage = image;
             };
                 
             WebView.Source = new UriBuilder(url).Uri;

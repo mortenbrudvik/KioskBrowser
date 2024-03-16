@@ -4,18 +4,13 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace KioskBrowser;
 
-public class MainViewModel : ViewModelBase
+public class MainViewModel(Action close) : ViewModelBase
 {
     private string _title = "Kiosk Browser";
-    private BitmapImage? _favicon;
+    private BitmapImage? _titlebarIcon = new(new Uri("pack://application:,,,/Images/app.png"));
+    private BitmapImage? _taskbarOverlayImage;
 
-    public MainViewModel(Action close)
-    {
-        CloseCommand = new RelayCommand(close);
-        _favicon = LoadIcon("pack://application:,,,/Images/app.png");
-    }
-
-    public RelayCommand CloseCommand { get; set; }
+    public RelayCommand CloseCommand { get; set; } = new(close);
 
     public string Title
     {
@@ -25,12 +20,16 @@ public class MainViewModel : ViewModelBase
     
     public BitmapImage? TitlebarIcon
     {
-        get => _favicon;
-        set => SetField(ref _favicon, value);
+        get => _titlebarIcon;
+        set => SetField(ref _titlebarIcon, value);
     }
     
-    public BitmapImage? TaskbarOverlayImage => null;
-    
+    public BitmapImage? TaskbarOverlayImage
+    {
+        get => _taskbarOverlayImage;
+        set => SetField(ref _taskbarOverlayImage, value);
+    }
+
     public string CacheFolderPath =>
         Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -38,12 +37,4 @@ public class MainViewModel : ViewModelBase
 
     public bool RefreshContentEnabled { get; set; }
     public double RefreshContentIntervalInSeconds { get; set; }
-    
-    
-    private BitmapImage LoadIcon(string iconPath)
-    {
-        var iconUri = new Uri(iconPath);
-        var image = new BitmapImage(iconUri);
-        return image;
-    }
 }

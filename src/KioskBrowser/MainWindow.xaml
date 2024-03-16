@@ -13,17 +13,16 @@
                  WindowState="Maximized"
                  Title="Kiosk Browser"
                  WindowStartupLocation="CenterScreen"
-                 MinHeight="150" MinWidth="200"
-                 >
-    
+                 MinHeight="150" MinWidth="200">
+
     <ui:FluentWindow.InputBindings>
         <KeyBinding Key="Escape" Command="{Binding Path=CloseCommand}" />
     </ui:FluentWindow.InputBindings>
-    
+
     <ui:FluentWindow.TaskbarItemInfo>
         <TaskbarItemInfo Overlay="{Binding TaskbarOverlayImage}" Description="Kiosk Browser" />
     </ui:FluentWindow.TaskbarItemInfo>
-    
+
     <Border BorderThickness="2">
         <Grid>
             <Grid.RowDefinitions>

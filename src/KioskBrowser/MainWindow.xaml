@@ -11,7 +11,7 @@
                  WindowCornerPreference="Round"
                  WindowStyle="None"
                  WindowState="Maximized"
-                 Title="Kiosk Browser"
+                 Title="{Binding Title}"
                  WindowStartupLocation="CenterScreen"
                  MinHeight="150" MinWidth="200">
 

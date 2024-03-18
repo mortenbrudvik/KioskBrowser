@@ -28,9 +28,9 @@ public partial class MainWindow
         Parser.Default.ParseArguments<Options>(args)
             .WithParsed(o =>
             {
-                if(!o.EnableTitlebar) 
-                    Titlebar.Height = 0; 
-                     
+                if(!o.EnableTitlebar)
+                    Titlebar.Height = 0;
+
                 _viewModel.RefreshContentEnabled = o.EnableAutomaticContentRefresh;
                 _viewModel.RefreshContentIntervalInSeconds = Math.Max(Math.Min(o.ContentRefreshIntervalInSeconds, 3600), 10);
             });
@@ -62,14 +62,14 @@ public partial class MainWindow
         {
             var environment = await CoreWebView2Environment.CreateAsync(null, _viewModel.CacheFolderPath);
             await WebView.EnsureCoreWebView2Async(environment);
-            
+
             WebView.CoreWebView2.DocumentTitleChanged += (_, _) =>
             {
                 var title = WebView.CoreWebView2.DocumentTitle;
                 if(!string.IsNullOrEmpty(title))
                     _viewModel.Title = title;
             };
-            
+
             WebView.CoreWebView2.FaviconChanged += async (_, _) =>
             {
                 var faviconUri = WebView.CoreWebView2.FaviconUri;
@@ -77,11 +77,11 @@ public partial class MainWindow
                 if (faviconUri == null) return;
                 var image = await ImageUtils.DownloadFaviconAsync(faviconUri);
                 _viewModel.TitlebarIcon = image;
-                _viewModel.TaskbarOverlayImage = image;
+                //_viewModel.TaskbarOverlayImage = image; // TODO: When there is more than one KioskBrowser this will not work..
             };
-                
+
             WebView.Source = new UriBuilder(url).Uri;
-                
+
             if (_viewModel.RefreshContentEnabled)
                 StartAutomaticContentRefresh();
         }

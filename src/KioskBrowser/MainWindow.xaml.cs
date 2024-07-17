@@ -63,6 +63,13 @@ public partial class MainWindow
         {
             var environment = await CoreWebView2Environment.CreateAsync(null, _viewModel.CacheFolderPath);
             await WebView.EnsureCoreWebView2Async(environment);
+            
+            if(FileUtils.IsFilePath(url))
+            {
+                var image = FileUtils.GetFileIcon(url);
+                _viewModel.TitlebarIcon = image;
+                _viewModel.TaskbarOverlayImage = image;
+            }
 
             WebView.CoreWebView2.DocumentTitleChanged += (_, _) =>
             {

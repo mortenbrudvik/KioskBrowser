@@ -4,16 +4,16 @@ using System.Windows.Media.Imaging;
 using SkiaSharp;
 using Svg.Skia;
 
-namespace KioskBrowser;
+namespace KioskBrowser.Common;
 
-public static class ImageUtils
+public static class FaviconIcon
 {
-    public static async Task<BitmapImage?> DownloadFaviconAsync(string faviconUrl)
+    public static async Task<BitmapImage?> DownloadAsync(string url)
     {
         try
         {
             using var client = new HttpClient();
-            var bytes = await client.GetByteArrayAsync(faviconUrl);
+            var bytes = await client.GetByteArrayAsync(url);
 
             return IsSvgImage(bytes) ? RenderSvgToBitmapImage(bytes) : CreateBitmapImageFromBytes(bytes);
         }

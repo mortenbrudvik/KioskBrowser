@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using System.Windows.Threading;
 using CommandLine;
+using KioskBrowser.Common;
 using Microsoft.Web.WebView2.Core;
 
 namespace KioskBrowser;
@@ -16,7 +17,7 @@ public partial class MainWindow
         _viewModel = new MainViewModel(Close);
 
         InitializeComponent();
-
+        
         DataContext = _viewModel;
     }
 
@@ -72,14 +73,14 @@ public partial class MainWindow
 
             WebView.CoreWebView2.FaviconChanged += async (_, _) =>
             {
-                var faviconUri = WebView.CoreWebView2.FaviconUri;
-                if (faviconUri == null) return;
+                 var faviconUri = WebView.CoreWebView2.FaviconUri;
+                 if (faviconUri == null) return;
 
-                var image = await ImageUtils.DownloadFaviconAsync(faviconUri);
-                if (image == null) return;
+                var image = await FaviconIcon.DownloadAsync(faviconUri);
+                 if (image == null) return;
                 
-                _viewModel.TitlebarIcon = image;
-                _viewModel.TaskbarOverlayImage = image;
+                 _viewModel.TitlebarIcon = image;
+                 _viewModel.TaskbarOverlayImage = image;
             };
 
             WebView.Source = new UriBuilder(url).Uri;

@@ -21,6 +21,8 @@
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2365.46" />
+    <PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.8" />
+    <PackageReference Include="Svg.Skia" Version="1.0.0.18" />
     <PackageReference Include="WPF-UI" Version="3.0.1" />
   </ItemGroup>
 

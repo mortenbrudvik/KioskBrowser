@@ -73,11 +73,13 @@ public partial class MainWindow
             WebView.CoreWebView2.FaviconChanged += async (_, _) =>
             {
                 var faviconUri = WebView.CoreWebView2.FaviconUri;
-
                 if (faviconUri == null) return;
+
                 var image = await ImageUtils.DownloadFaviconAsync(faviconUri);
+                if (image == null) return;
+                
                 _viewModel.TitlebarIcon = image;
-                //_viewModel.TaskbarOverlayImage = image; // TODO: When there is more than one KioskBrowser this will not work..
+                _viewModel.TaskbarOverlayImage = image;
             };
 
             WebView.Source = new UriBuilder(url).Uri;

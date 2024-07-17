@@ -37,4 +37,5 @@ public class MainViewModel(Action close) : ViewModelBase
 
     public bool RefreshContentEnabled { get; set; }
     public double RefreshContentIntervalInSeconds { get; set; }
+    public bool TitlebarEnabled { get; set; }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Input;
 using System.Windows.Threading;
 using CommandLine;
 using KioskBrowser.Common;
@@ -20,6 +19,12 @@ public partial class MainWindow
         
         DataContext = _viewModel;
     }
+    
+    private new void Close()
+    {
+        if(!_viewModel.TitlebarEnabled)
+            base.Close();
+    }
 
     protected override void OnInitialized(EventArgs e)
     {
@@ -32,6 +37,7 @@ public partial class MainWindow
                 if(!o.EnableTitlebar)
                     Titlebar.Height = 0;
 
+                _viewModel.TitlebarEnabled = o.EnableTitlebar;
                 _viewModel.RefreshContentEnabled = o.EnableAutomaticContentRefresh;
                 _viewModel.RefreshContentIntervalInSeconds = Math.Max(Math.Min(o.ContentRefreshIntervalInSeconds, 3600), 10);
             });
@@ -40,13 +46,6 @@ public partial class MainWindow
     protected override async void OnContentRendered(EventArgs e)
     {
         base.OnContentRendered(e);
-
-        //Close the window when the escape key is pressed (if the title bar is hidden)
-        KeyDown += (_, eventArgs) =>
-        {
-            if (eventArgs.Key == Key.Escape && Titlebar.Height == 0)
-                Close();
-        };
 
         var args = Environment.GetCommandLineArgs();
 
@@ -58,7 +57,7 @@ public partial class MainWindow
         }
 
         var url = args[1];
-
+        
         try
         {
             var environment = await CoreWebView2Environment.CreateAsync(null, _viewModel.CacheFolderPath);

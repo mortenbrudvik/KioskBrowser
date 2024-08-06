@@ -16,15 +16,15 @@ using static System.Console;
 ////////////////////////////////////////////////////////////////////////////////
 
 // Versioning (major.minor.patch.build)
-var productVersion = "1.1";
+var productVersion = "1.2";
 var patchNumber = "0";
 var buildNumber = "0"; 
 var assemblyVersion = $"{productVersion}.{patchNumber}"; // Internal to the CLR, is not exposed
 var assemblyFileVersion = $"{productVersion}.{patchNumber}.{buildNumber}"; // Important for the deployment and windows to differentiate the files
 var assemblyInformationalVersion = $"{productVersion} Release"; // Product version - the version that you would use on your website etc.
 
+var buildDir = "KioskBrowser";
 var artifactsDir = "artifacts";
-var publishDir = $"{artifactsDir}/publish";
 
 ////////////////////////////////////////////////////////////////////////////////
 // OPTIONS
@@ -32,9 +32,16 @@ var publishDir = $"{artifactsDir}/publish";
 
 public sealed class Options
 {
-    [Option('t', "target", Required = false, Default = "build-msi")]
+    [Option('t', "target", Required = false, Default = "build-msix", HelpText = "The target to run")]
     public string Target { get; set; }
+    
+    [Option("identityName", Required = false, Default = "MortenBrudvik.KioskBrowser", HelpText = "Unique Id of the application")]
+    public string IdentityName { get; set; }
+    
+    [Option("identityPublisher", Required = false, Default = "CN=MortenBrudvik", HelpText = "Publisher of the application")]
+    public string IdentityPublisher { get; set; }
 }
+
 
 Options options;
 
@@ -42,15 +49,30 @@ Options options;
 // TARGETS
 ////////////////////////////////////////////////////////////////////////////////
 
-Target("clean-solution", () => DeleteDirectory(artifactsDir));
-
-Target("build-solution", DependsOn("clean-solution"), () => {
-    Run("dotnet", $@"publish ..\ -c Release -r win-x64 -o {publishDir} /p:FileVersion={assemblyFileVersion} /p:AssemblyVersion={assemblyVersion} /p:InformationalVersion=""{assemblyInformationalVersion}"" ");
+Target("clean-solution", () => {
+    DeleteDirectory(buildDir);
+    DeleteDirectory(artifactsDir);
 });
 
-Target("build-msi", 
-    DependsOn("build-solution"), () => {
-    Run(MSBuildPath, $@"..\Installer\ /p:Configuration=Release ");});
+Target("build-binaries", DependsOn("clean-solution"), () => {
+    Run("dotnet", $@"publish ..\ -c Release -r win-x64 -o {buildDir} /p:FileVersion={assemblyFileVersion} /p:AssemblyVersion={assemblyVersion} /p:InformationalVersion=""{assemblyInformationalVersion}"" ");
+});
+
+Target("update-package-manifest",
+    DependsOn("build-binaries"),
+    () => {
+        string manifestPath = Path.Combine(Directory.GetCurrentDirectory(),"AppxManifest.xml");
+        Run("powershell.exe", $"\".\\scripts\\update-package-manifest.ps1\" -manifestPath \"{manifestPath}\" -newVersion \"{assemblyFileVersion}\" -identityName \"{options.IdentityName}\" -identityPublisher \"{options.IdentityPublisher}\" " );
+    }
+); 
+
+Target("build-msix", DependsOn("update-package-manifest"), () => {
+    Run("MakeAppx.exe", $"pack /d . /p .\\{Path.Combine(artifactsDir, "SwiftKioskBrowser.msix")}");
+});
+
+Target("sign-package", DependsOn("build-msix"), () => {
+    Run("signtool.exe", $"sign /fd SHA256 /a /n MortenBrudvik .\\{Path.Combine(artifactsDir, "SwiftKioskBrowser.msix")}");
+});
 
 ////////////////////////////////////////////////////////////////////////////////
 // EXECUTION

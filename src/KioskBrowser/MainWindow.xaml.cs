@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Threading;
 using CommandLine;
 using KioskBrowser.Common;
@@ -49,14 +50,10 @@ public partial class MainWindow
 
         var args = Environment.GetCommandLineArgs();
 
-        if (args.Length < 2)
-        {
-            MessageBox.Show(this, "Information", "No parameters. Browser window will close.");
-            Application.Current.Shutdown();
-            return;
-        }
+        
+        var readmeFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "readme.html");
 
-        var url = args[1];
+        var url = args.Length < 2 ? readmeFilePath : args[1];
         
         try
         {

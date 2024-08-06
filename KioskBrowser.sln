@@ -1,51 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30711.63
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KioskBrowser", "src\KioskBrowser\KioskBrowser.csproj", "{9A203C7A-49D0-430D-94F2-2AF430F07905}"
 EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Installer", "Installer\Installer.wixproj", "{A6CA9E35-1A5A-4244-B358-48CB2D13C6AE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9A203C7A-49D0-430D-94F2-2AF430F07905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9A203C7A-49D0-430D-94F2-2AF430F07905}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A203C7A-49D0-430D-94F2-2AF430F07905}.Debug|x64.ActiveCfg = Debug|x64
 		{9A203C7A-49D0-430D-94F2-2AF430F07905}.Debug|x64.Build.0 = Debug|x64
-		{9A203C7A-49D0-430D-94F2-2AF430F07905}.Debug|x86.ActiveCfg = Debug|x86
-		{9A203C7A-49D0-430D-94F2-2AF430F07905}.Debug|x86.Build.0 = Debug|x86
-		{9A203C7A-49D0-430D-94F2-2AF430F07905}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9A203C7A-49D0-430D-94F2-2AF430F07905}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9A203C7A-49D0-430D-94F2-2AF430F07905}.Release|x64.ActiveCfg = Release|x64
 		{9A203C7A-49D0-430D-94F2-2AF430F07905}.Release|x64.Build.0 = Release|x64
-		{9A203C7A-49D0-430D-94F2-2AF430F07905}.Release|x86.ActiveCfg = Release|x86
-		{9A203C7A-49D0-430D-94F2-2AF430F07905}.Release|x86.Build.0 = Release|x86
-		{A6CA9E35-1A5A-4244-B358-48CB2D13C6AE}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{A6CA9E35-1A5A-4244-B358-48CB2D13C6AE}.Debug|x64.ActiveCfg = Debug|x64
-		{A6CA9E35-1A5A-4244-B358-48CB2D13C6AE}.Debug|x64.Build.0 = Debug|x64
-		{A6CA9E35-1A5A-4244-B358-48CB2D13C6AE}.Debug|x86.ActiveCfg = Debug|x86
-		{A6CA9E35-1A5A-4244-B358-48CB2D13C6AE}.Debug|x86.Build.0 = Debug|x86
-		{A6CA9E35-1A5A-4244-B358-48CB2D13C6AE}.Release|Any CPU.ActiveCfg = Release|x86
-		{A6CA9E35-1A5A-4244-B358-48CB2D13C6AE}.Release|x64.ActiveCfg = Release|x64
-		{A6CA9E35-1A5A-4244-B358-48CB2D13C6AE}.Release|x64.Build.0 = Release|x64
-		{A6CA9E35-1A5A-4244-B358-48CB2D13C6AE}.Release|x86.ActiveCfg = Release|x86
-		{A6CA9E35-1A5A-4244-B358-48CB2D13C6AE}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C5603197-08D4-4A29-B0BC-CF4B74BBEE15}
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal

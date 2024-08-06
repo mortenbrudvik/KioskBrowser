@@ -4,6 +4,50 @@ namespace KioskBrowser.Native;
 
 public static class Shell32
 {
+    [DllImport("Shell32.dll")]
+    public static extern int SHGetPropertyStoreForWindow(IntPtr hwnd, ref Guid iid, out IPropertyStore propertyStore);
+
+    [ComImport]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [Guid("886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99")]
+    public interface IPropertyStore
+    {
+        int GetCount([Out] out uint propertyCount);
+        int GetAt([In] uint propertyIndex, out PropertyKey key);
+        int GetValue([In] ref PropertyKey key, [Out] PropVariant pv);
+        int SetValue([In] ref PropertyKey key, [In] PropVariant pv);
+        int Commit();
+    }
+    
+    [StructLayout(LayoutKind.Sequential)]
+    public struct PropertyKey(Guid guid, uint id)
+    {
+        public Guid fmtid = guid;
+        public uint pid = id;
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct PropVariant
+    {
+        [FieldOffset(0)]
+        public ushort vt;
+        [FieldOffset(8)]
+        public IntPtr pszVal;
+
+        public VarEnum VariantType => (VarEnum)vt;
+    }
+
+    public enum VarEnum : ushort
+    {
+        VT_LPWSTR = 31
+    }
+    
+    public static PropertyKey PKEY_AppUserModel_ID = new PropertyKey
+    {
+        fmtid = new Guid("9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3"),
+        pid = 5
+    };
+    
     [DllImport("shell32.dll", CharSet = CharSet.Auto)]
     public static extern bool SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbFileInfo, uint uFlags);
 

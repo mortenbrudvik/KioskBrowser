@@ -1,8 +1,10 @@
 ﻿using System.IO;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Threading;
 using CommandLine;
 using KioskBrowser.Common;
+using KioskBrowser.Native;
 using Microsoft.Web.WebView2.Core;
 
 namespace KioskBrowser;
@@ -96,6 +98,15 @@ public partial class MainWindow
             MessageBox.Show(this, "Error Occurred", "An error occurred when starting the browser. Browser window will close.");
             Application.Current.Shutdown();
         }
+    }
+
+    protected override void OnSourceInitialized(EventArgs e)
+    {
+        base.OnSourceInitialized(e);
+        
+        var handle = new WindowInteropHelper(this).Handle;
+        var propertyStore = new WindowPropertyStore(handle);
+        propertyStore.SetAppUserModelId("KioskBrowser" + Guid.NewGuid());
     }
 
     private void StartAutomaticContentRefresh()

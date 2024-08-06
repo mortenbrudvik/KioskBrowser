@@ -16,7 +16,7 @@ using static System.Console;
 ////////////////////////////////////////////////////////////////////////////////
 
 // Versioning (major.minor.patch.build)
-var productVersion = "1.2";
+var productVersion = "1.3";
 var patchNumber = "0";
 var buildNumber = "0"; 
 var assemblyVersion = $"{productVersion}.{patchNumber}"; // Internal to the CLR, is not exposed

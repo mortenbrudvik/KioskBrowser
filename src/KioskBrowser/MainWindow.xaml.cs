@@ -4,8 +4,8 @@ using System.Windows.Interop;
 using System.Windows.Threading;
 using CommandLine;
 using KioskBrowser.Common;
-using KioskBrowser.Native;
 using Microsoft.Web.WebView2.Core;
+using static KioskBrowser.Native.ShellHelper;
 
 namespace KioskBrowser;
 
@@ -104,9 +104,9 @@ public partial class MainWindow
     {
         base.OnSourceInitialized(e);
         
-        var handle = new WindowInteropHelper(this).Handle;
-        var propertyStore = new WindowPropertyStore(handle);
-        propertyStore.SetAppUserModelId("KioskBrowser" + Guid.NewGuid());
+        var hwnd = new WindowInteropHelper(this).Handle;
+        
+        SetAppUserModelId(hwnd, "KioskBrowser" + Guid.NewGuid());
     }
 
     private void StartAutomaticContentRefresh()

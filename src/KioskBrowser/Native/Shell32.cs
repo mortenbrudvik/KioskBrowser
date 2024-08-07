@@ -4,7 +4,7 @@ namespace KioskBrowser.Native;
 
 public static class Shell32
 {
-    [DllImport("Shell32.dll")]
+    [DllImport("Shell32.dll", SetLastError = true)]
     public static extern int SHGetPropertyStoreForWindow(IntPtr hwnd, ref Guid iid, out IPropertyStore propertyStore);
 
     [ComImport]
@@ -35,11 +35,6 @@ public static class Shell32
         public IntPtr pszVal;
 
         public VarEnum VariantType => (VarEnum)vt;
-    }
-
-    public enum VarEnum : ushort
-    {
-        VT_LPWSTR = 31
     }
     
     public static PropertyKey PKEY_AppUserModel_ID = new PropertyKey

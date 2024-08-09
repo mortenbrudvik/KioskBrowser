@@ -25,6 +25,7 @@ var assemblyInformationalVersion = $"{productVersion} Release"; // Product versi
 
 var buildDir = "KioskBrowser";
 var artifactsDir = "artifacts";
+var packageFileName = $"SwiftKioskBrowser_{assemblyFileVersion}.msix";
 
 ////////////////////////////////////////////////////////////////////////////////
 // OPTIONS
@@ -55,7 +56,7 @@ Target("clean-solution", () => {
 });
 
 Target("build-binaries", DependsOn("clean-solution"), () => {
-    Run("dotnet", $@"publish ..\ -c Release -r win-x64 -o {buildDir} /p:FileVersion={assemblyFileVersion} /p:AssemblyVersion={assemblyVersion} /p:InformationalVersion=""{assemblyInformationalVersion}"" ");
+    Run("dotnet", $@"publish ..\ -c Release -r win-x64 --self-contained true -o {buildDir} /p:FileVersion={assemblyFileVersion} /p:AssemblyVersion={assemblyVersion} /p:InformationalVersion=""{assemblyInformationalVersion}"" ");
 });
 
 Target("update-package-manifest",
@@ -67,11 +68,11 @@ Target("update-package-manifest",
 ); 
 
 Target("build-msix", DependsOn("update-package-manifest"), () => {
-    Run("MakeAppx.exe", $"pack /d . /p .\\{Path.Combine(artifactsDir, "SwiftKioskBrowser.msix")}");
+    Run("MakeAppx.exe", $"pack /d . /p .\\{Path.Combine(artifactsDir, packageFileName)}");
 });
 
 Target("sign-package", DependsOn("build-msix"), () => {
-    Run("signtool.exe", $"sign /fd SHA256 /a /n MortenBrudvik .\\{Path.Combine(artifactsDir, "SwiftKioskBrowser.msix")}");
+    Run("signtool.exe", $"sign /fd SHA256 /a /n MortenBrudvik .\\{Path.Combine(artifactsDir, packageFileName)}");
 });
 
 ////////////////////////////////////////////////////////////////////////////////

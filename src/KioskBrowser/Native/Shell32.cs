@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace KioskBrowser.Native;
 
@@ -7,16 +8,23 @@ public static class Shell32
     [DllImport("Shell32.dll", SetLastError = true)]
     public static extern int SHGetPropertyStoreForWindow(IntPtr hwnd, ref Guid iid, out IPropertyStore propertyStore);
 
-    [ComImport]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [Guid("886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99")]
+    [ComImport, Guid("886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IPropertyStore
     {
-        int GetCount([Out] out uint propertyCount);
-        int GetAt([In] uint propertyIndex, out PropertyKey key);
-        int GetValue([In] ref PropertyKey key, [Out] PropVariant pv);
-        int SetValue([In] ref PropertyKey key, [In] PropVariant pv);
-        int Commit();
+        [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+        void GetCount([Out] out uint cProps);
+
+        [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+        void GetAt([In] uint iProp, out PropertyKey pkey);
+
+        [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+        void GetValue([In] ref PropertyKey key, out PropVariant pv);
+
+        [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+        void SetValue([In] ref PropertyKey key, [In] ref PropVariant pv);
+
+        [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+        void Commit();
     }
     
     [StructLayout(LayoutKind.Sequential)]

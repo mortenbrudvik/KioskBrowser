@@ -25,6 +25,8 @@
     <None Update="readme.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Remove="Images\error.png" />
+    <Resource Include="Images\error.png" />
   </ItemGroup>
 
   <ItemGroup>

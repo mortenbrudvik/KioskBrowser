@@ -4,29 +4,19 @@ namespace KioskBrowser;
 
 public static class StoreHelper
 {
-    public static async Task<PackageInstallerInfo?> CheckForUpdates()
+    public static async Task<PackageInstallerInfo> CheckForUpdates()
     {
-        try
-        {
-            var result = await CheckForUpdateAvailability();
-            var isUpdateAvailable = result is PackageUpdateAvailability.Available or PackageUpdateAvailability.Required;
-            var installerPath = GetInstallerLink();
-            var storeLink = GetStoreLink();
-            var installedVersion = GetInstalledVersion();
+        var result = await CheckForUpdateAvailability();
+        var isUpdateAvailable = result is PackageUpdateAvailability.Available or PackageUpdateAvailability.Required;
+        var installerPath = GetInstallerLink();
+        var storeLink = GetStoreLink();
+        var installedVersion = GetInstalledVersion();
 
-            return new PackageInstallerInfo(
-                installedVersion,
-                isUpdateAvailable,
-                installerPath,
-                storeLink);
-        }
-        catch (Exception)
-        {
-            // ignored
-        }
-
-        return null;
-        
+        return new PackageInstallerInfo(
+            installedVersion,
+            isUpdateAvailable,
+            installerPath,
+            storeLink);
     }
 
     private static Uri? GetStoreLink()
@@ -80,5 +70,5 @@ public static class StoreHelper
     }
 }
 
-public record PackageInstallerInfo(string InstalledVersion, bool IsUpdateAvailable, Uri InstallerLink, Uri? StoreLink);
+public record PackageInstallerInfo(string InstalledVersion, bool IsUpdateAvailable, Uri? InstallerLink, Uri? StoreLink);
 

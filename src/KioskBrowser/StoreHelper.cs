@@ -10,14 +10,14 @@ public static class StoreHelper
         {
             var result = await CheckForUpdateAvailability();
             var isUpdateAvailable = result is PackageUpdateAvailability.Available or PackageUpdateAvailability.Required;
-            var installerPath = Package.Current.GetAppInstallerInfo().Uri.ToString();
-            var storeLink = new Uri("ms-windows-store://pdp/?ProductId=" + Package.Current.Id.ProductId);
+            var installerPath = GetInstallerLink();
+            var storeLink = GetStoreLink();
             var installedVersion = GetInstalledVersion();
 
             return new PackageInstallerInfo(
                 installedVersion,
                 isUpdateAvailable,
-                new Uri(installerPath),
+                installerPath,
                 storeLink);
         }
         catch (Exception)
@@ -26,18 +26,57 @@ public static class StoreHelper
         }
 
         return null;
+        
+    }
+
+    private static Uri? GetStoreLink()
+    {
+        try
+        {
+            return new Uri("ms-windows-store://pdp/?ProductId=" + Package.Current.Id.ProductId);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+    
+    private static Uri? GetInstallerLink()
+    {
+        try
+        {
+            return Package.Current.GetAppInstallerInfo().Uri;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 
     private static string GetInstalledVersion()
     {
-        var version = Package.Current.Id.Version;
-        return $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+        try
+        {
+            var version = Package.Current.Id.Version;
+            return $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+        }
+        catch (Exception)
+        {
+            return "Local Version";
+        }
     }
     
     private static async Task<PackageUpdateAvailability> CheckForUpdateAvailability()
     {
-        var result = await Package.Current.CheckUpdateAvailabilityAsync();
-        return result.Availability;
+        try
+        {
+            var result = await Package.Current.CheckUpdateAvailabilityAsync();
+            return result.Availability;
+        }
+        catch (Exception)
+        {
+            return PackageUpdateAvailability.NoUpdates;
+        }
     }
 }
 

@@ -18,7 +18,8 @@
                         FontSize="24"
                         Symbol="ArrowLeft24" />
                 </ui:Button>
-                <ui:TextBlock Text="About" FontTypography="Title" TextAlignment="Center" Foreground="{ui:ThemeResource TextFillColorPrimaryBrush}" />
+                <ui:TextBlock Text="About" FontTypography="Title" TextAlignment="Center"
+                              Foreground="{ui:ThemeResource TextFillColorPrimaryBrush}" />
             </StackPanel>
         </StackPanel>
 
@@ -90,6 +91,41 @@
                         </Grid>
                     </Border>
                 </Border>
+
+                <!-- Version Updates  -->
+                <StackPanel Grid.Row="1" Margin="0,20,0,24">
+
+                    <!-- Header  -->
+                    <ui:TextBlock
+                        Margin="5,0,0,8"
+                        FontTypography="BodyStrong"
+                        Foreground="{ui:ThemeResource TextFillColorPrimaryBrush}"
+                        Text="Version &amp; updates" />
+
+                    <!-- Current Version  -->
+                    <ui:CardControl Margin="0,0,0,12">
+                        <ui:CardControl.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ui:TextBlock
+                                    Grid.Row="0" Grid.Column="0"
+                                    FontTypography="BodyStrong"
+                                    Margin="5 0 5 5"
+                                    Text="{Binding CurrentVersion}" />
+                     
+                            </Grid>
+                        </ui:CardControl.Header>
+                    </ui:CardControl>
+                </StackPanel>
+
             </Grid>
         </Border>
     </StackPanel>

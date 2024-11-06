@@ -18,4 +18,6 @@ public partial class AboutPage : Page
     {
         _navigationService.Navigate<BrowserPage>();
     }
+
+    public string CurrentVersion => "Swift Kiosk Browser " + AppSettings.Version;
 }

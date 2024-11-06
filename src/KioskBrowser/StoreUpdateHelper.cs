@@ -9,6 +9,12 @@ namespace KioskBrowser;
 public class StoreUpdateHelper
 {
     private readonly StoreContext _context = StoreContext.GetDefault();
+
+    public async Task<bool> IsUpdateAvailableAsync()
+    {
+        IReadOnlyList<StorePackageUpdate> updates = await _context.GetAppAndOptionalStorePackageUpdatesAsync();
+        return updates.Any();
+    } 
     
     /// <summary>
     /// Downloads and installs all available package updates in separate steps.

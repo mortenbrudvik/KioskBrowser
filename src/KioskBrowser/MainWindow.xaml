@@ -34,9 +34,25 @@
                 <ui:TitleBar.Icon>
                     <ui:ImageIcon Source="{Binding TitlebarIcon}" />
                 </ui:TitleBar.Icon>
+                <ui:TitleBar.Header>
+                    <Grid HorizontalAlignment="Right" VerticalAlignment="Top">
+                        <ui:Button Height="30" Width="44" Icon="{ui:SymbolIcon Info24}"  Appearance="Transparent" BorderThickness="0" CornerRadius="0" Command="{Binding ShowAboutPageCommand}"
+                                   ToolTip="About"
+                                   PressedForeground="{Binding ButtonsForeground, RelativeSource={RelativeSource AncestorType=ui:TitleBar}}"
+                                   PressedBackground="{Binding ButtonsBackground, RelativeSource={RelativeSource AncestorType=ui:TitleBar}}"
+                                   MouseOverBackground="{Binding ButtonsBackground, RelativeSource={RelativeSource AncestorType=ui:TitleBar}}" />
+                        <Ellipse Width="8" Height="8" Fill="DodgerBlue"
+                                 HorizontalAlignment="Right" VerticalAlignment="Top"
+                                 Margin="5 8 7 5"
+                                 Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    </Grid>
+                </ui:TitleBar.Header>
+                
             </ui:TitleBar>
 
-            <wpf:WebView2 Grid.Row="1" Name="WebView" />
+            <Frame Grid.Row="1" x:Name="MainFrame" Height="Auto" NavigationUIVisibility="Hidden" JournalOwnership="OwnsJournal" />
+            
+            <!-- <wpf:WebView2 Grid.Row="1" Name="WebView" /> -->
 
         </Grid>
     </Border>

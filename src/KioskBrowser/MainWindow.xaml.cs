@@ -5,6 +5,7 @@ using System.Windows.Threading;
 using CommandLine;
 using KioskBrowser.Common;
 using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
 using static KioskBrowser.Native.ShellHelper;
 
 namespace KioskBrowser;
@@ -13,6 +14,8 @@ public partial class MainWindow
 {
     private readonly DispatcherTimer _refreshContentTimer = new();
     private readonly MainViewModel _viewModel;
+    private readonly WebView2 _webView;
+    private readonly NavigationService _navigationService;
 
     public MainWindow()
     {
@@ -21,6 +24,15 @@ public partial class MainWindow
         InitializeComponent();
         
         DataContext = _viewModel;
+        
+        _webView = new WebView2();
+        _webView.Loaded += async (_, _) => await InitializeWebView();
+        
+        var browserPage = new BrowserPage(_webView);
+        
+        _navigationService = new NavigationService(); 
+        _navigationService.AddPage(browserPage);
+        _navigationService.SetNavigationFrame(MainFrame);
     }
     
     private new void Close()
@@ -46,12 +58,16 @@ public partial class MainWindow
             });
     }
 
-    protected override async void OnContentRendered(EventArgs e)
+    protected override void OnContentRendered(EventArgs e)
     {
         base.OnContentRendered(e);
 
-        var args = Environment.GetCommandLineArgs();
+        _navigationService.Navigate<BrowserPage>();
+    }
 
+    private async Task InitializeWebView()
+    {
+        var args = Environment.GetCommandLineArgs();
         
         var readmeFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "readme.html");
 
@@ -60,7 +76,7 @@ public partial class MainWindow
         try
         {
             var environment = await CoreWebView2Environment.CreateAsync(null, _viewModel.CacheFolderPath);
-            await WebView.EnsureCoreWebView2Async(environment);
+            await _webView.EnsureCoreWebView2Async(environment);
             
             if(FileUtils.IsFilePath(url))
             {
@@ -69,26 +85,26 @@ public partial class MainWindow
                 _viewModel.TaskbarOverlayImage = image;
             }
 
-            WebView.CoreWebView2.DocumentTitleChanged += (_, _) =>
+            _webView.CoreWebView2.DocumentTitleChanged += (_, _) =>
             {
-                var title = WebView.CoreWebView2.DocumentTitle;
+                var title = _webView.CoreWebView2.DocumentTitle;
                 if(!string.IsNullOrEmpty(title))
                     _viewModel.Title = title;
             };
 
-            WebView.CoreWebView2.FaviconChanged += async (_, _) =>
+            _webView.CoreWebView2.FaviconChanged += async (_, _) =>
             {
-                 var faviconUri = WebView.CoreWebView2.FaviconUri;
-                 if (faviconUri == null) return;
+                var faviconUri = _webView.CoreWebView2.FaviconUri;
+                if (faviconUri == null) return;
 
                 var image = await FaviconIcon.DownloadAsync(faviconUri);
-                 if (image == null) return;
+                if (image == null) return;
                 
-                 _viewModel.TitlebarIcon = image;
-                 _viewModel.TaskbarOverlayImage = image;
+                _viewModel.TitlebarIcon = image;
+                _viewModel.TaskbarOverlayImage = image;
             };
 
-            WebView.Source = new UriBuilder(url).Uri;
+            _webView.Source = new UriBuilder(url).Uri;
 
             if (_viewModel.RefreshContentEnabled)
                 StartAutomaticContentRefresh();
@@ -111,7 +127,7 @@ public partial class MainWindow
 
     private void StartAutomaticContentRefresh()
     {
-        _refreshContentTimer.Tick += (_, _) => WebView.Reload();
+        _refreshContentTimer.Tick += (_, _) => _webView.Reload();
         _refreshContentTimer.Interval = TimeSpan.FromSeconds(_viewModel.RefreshContentIntervalInSeconds);
         _refreshContentTimer.Start();
     }

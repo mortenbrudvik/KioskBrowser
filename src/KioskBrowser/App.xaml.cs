@@ -23,12 +23,8 @@ public partial class App
         
         SimpleLogger.LogInfo("Starting Swift Kiosk Browser");
 
-        var result = await StoreHelper.CheckForUpdates();
-        SimpleLogger.LogInfo("Version: " + result.InstalledVersion);
-        SimpleLogger.LogInfo("Version: " + result.InstalledVersion);
-        SimpleLogger.LogInfo("Update available: " + result.IsUpdateAvailable);
-        SimpleLogger.LogInfo("Installer link: " + result.InstallerLink);
-        SimpleLogger.LogInfo("Store link: " + result.StoreLink);
+        SimpleLogger.LogInfo("Version: " + AppSettings.Version);
+        SimpleLogger.LogInfo("Store link: " + AppSettings.MicrosoftStoreLink);
 
         var window = new MainWindow();
         window.Show();

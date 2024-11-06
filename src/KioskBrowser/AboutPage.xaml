@@ -119,8 +119,16 @@
                                     Grid.Row="0" Grid.Column="0"
                                     FontTypography="BodyStrong"
                                     Margin="5 0 5 5"
-                                    Text="{Binding CurrentVersion}" />
-                     
+                                    Text="{Binding CurrentVersionText}" />
+
+                                <ui:TextBlock
+                                    Grid.Row="1" Grid.Column="0"
+                                    FontTypography="BodyStrong"
+                                    Margin="5 0 5 5"
+                                    Text="{Binding UpdateAvailableText}" />
+
+
+                                
                             </Grid>
                         </ui:CardControl.Header>
                     </ui:CardControl>

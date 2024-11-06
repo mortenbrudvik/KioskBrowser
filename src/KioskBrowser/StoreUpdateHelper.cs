@@ -12,8 +12,17 @@ public class StoreUpdateHelper
 
     public async Task<bool> IsUpdateAvailableAsync()
     {
-        IReadOnlyList<StorePackageUpdate> updates = await _context.GetAppAndOptionalStorePackageUpdatesAsync();
-        return updates.Any();
+        try
+        {
+            IReadOnlyList<StorePackageUpdate> updates = await _context.GetAppAndOptionalStorePackageUpdatesAsync();
+            return updates.Any();
+        }
+        catch (Exception e)
+        {
+            SimpleLogger.LogError(e, "Failed to check for updates.");
+        }
+
+        return false;
     } 
     
     /// <summary>

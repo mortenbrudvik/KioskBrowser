@@ -20,7 +20,7 @@ public partial class MainViewModel(Action close, NavigationService navigationSer
     
     public string CacheFolderPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "KioskBrowser");
 
-    public bool IsUpdateAvailable => true;//_storeUpdateHelper.IsUpdateAvailableAsync().Result;
+    public bool IsUpdateAvailable => false;//_storeUpdateHelper.IsUpdateAvailableAsync().Result;
     
     [RelayCommand]
     private void Close() => close();

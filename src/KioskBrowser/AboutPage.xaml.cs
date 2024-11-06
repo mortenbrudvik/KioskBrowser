@@ -6,6 +6,7 @@ namespace KioskBrowser;
 public partial class AboutPage : Page
 {
     private readonly NavigationService _navigationService;
+    private readonly StoreUpdateHelper _storeUpdateHelper = new();
 
     public AboutPage(NavigationService navigationService)
     {
@@ -19,5 +20,7 @@ public partial class AboutPage : Page
         _navigationService.Navigate<BrowserPage>();
     }
 
-    public string CurrentVersion => "Swift Kiosk Browser " + AppSettings.Version;
+    public string CurrentVersionText => "Swift Kiosk Browser " + AppSettings.Version;
+
+    public string UpdateAvailableText => _storeUpdateHelper.IsUpdateAvailableAsync().Result ? "An update is available" : "You are up to date";
 }

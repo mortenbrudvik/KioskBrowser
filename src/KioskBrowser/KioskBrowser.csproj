@@ -27,6 +27,8 @@
     </None>
     <None Remove="Images\error.png" />
     <Resource Include="Images\error.png" />
+    <None Remove="Images\about-heading.jpg" />
+    <Resource Include="Images\about-heading.jpg" />
   </ItemGroup>
 
   <ItemGroup>

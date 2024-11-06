@@ -19,19 +19,23 @@ public partial class MainWindow
 
     public MainWindow()
     {
-        _viewModel = new MainViewModel(Close);
+        _navigationService = new NavigationService(); 
+        _webView = new WebView2();
+        
+        _webView.Loaded += async (_, _) => await InitializeWebView();
+        
+        var browserPage = new BrowserPage(_webView);
+        var aboutPage = new AboutPage(_navigationService);
+
+        _navigationService.AddPage(browserPage);
+        _navigationService.AddPage(aboutPage);
+        
+        _viewModel = new MainViewModel(Close, _navigationService);
 
         InitializeComponent();
         
         DataContext = _viewModel;
         
-        _webView = new WebView2();
-        _webView.Loaded += async (_, _) => await InitializeWebView();
-        
-        var browserPage = new BrowserPage(_webView);
-        
-        _navigationService = new NavigationService(); 
-        _navigationService.AddPage(browserPage);
         _navigationService.SetNavigationFrame(MainFrame);
     }
     
@@ -67,53 +71,48 @@ public partial class MainWindow
 
     private async Task InitializeWebView()
     {
+        if(_webView.CoreWebView2 != null)
+            return;
+        
         var args = Environment.GetCommandLineArgs();
         
         var readmeFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "readme.html");
 
         var url = args.Length < 2 ? readmeFilePath : args[1];
+    
+        var environment = await CoreWebView2Environment.CreateAsync(null, _viewModel.CacheFolderPath);
+        await _webView.EnsureCoreWebView2Async(environment);
         
-        try
+        if(FileUtils.IsFilePath(url))
         {
-            var environment = await CoreWebView2Environment.CreateAsync(null, _viewModel.CacheFolderPath);
-            await _webView.EnsureCoreWebView2Async(environment);
+            var image = FileUtils.GetFileIcon(url);
+            _viewModel.TitlebarIcon = image;
+            _viewModel.TaskbarOverlayImage = image;
+        }
+
+        _webView.CoreWebView2.DocumentTitleChanged += (_, _) =>
+        {
+            var title = _webView.CoreWebView2.DocumentTitle;
+            if(!string.IsNullOrEmpty(title))
+                _viewModel.Title = title;
+        };
+
+        _webView.CoreWebView2.FaviconChanged += async (_, _) =>
+        {
+            var faviconUri = _webView.CoreWebView2.FaviconUri;
+            if (faviconUri == null) return;
+
+            var image = await FaviconIcon.DownloadAsync(faviconUri);
+            if (image == null) return;
             
-            if(FileUtils.IsFilePath(url))
-            {
-                var image = FileUtils.GetFileIcon(url);
-                _viewModel.TitlebarIcon = image;
-                _viewModel.TaskbarOverlayImage = image;
-            }
+            _viewModel.TitlebarIcon = image;
+            _viewModel.TaskbarOverlayImage = image;
+        };
 
-            _webView.CoreWebView2.DocumentTitleChanged += (_, _) =>
-            {
-                var title = _webView.CoreWebView2.DocumentTitle;
-                if(!string.IsNullOrEmpty(title))
-                    _viewModel.Title = title;
-            };
+        _webView.Source = new UriBuilder(url).Uri;
 
-            _webView.CoreWebView2.FaviconChanged += async (_, _) =>
-            {
-                var faviconUri = _webView.CoreWebView2.FaviconUri;
-                if (faviconUri == null) return;
-
-                var image = await FaviconIcon.DownloadAsync(faviconUri);
-                if (image == null) return;
-                
-                _viewModel.TitlebarIcon = image;
-                _viewModel.TaskbarOverlayImage = image;
-            };
-
-            _webView.Source = new UriBuilder(url).Uri;
-
-            if (_viewModel.RefreshContentEnabled)
-                StartAutomaticContentRefresh();
-        }
-        catch (Exception)
-        {
-            MessageBox.Show(this, "Error Occurred", "An error occurred when starting the browser. Browser window will close.");
-            Application.Current.Shutdown();
-        }
+        if (_viewModel.RefreshContentEnabled)
+            StartAutomaticContentRefresh();
     }
 
     protected override void OnSourceInitialized(EventArgs e)

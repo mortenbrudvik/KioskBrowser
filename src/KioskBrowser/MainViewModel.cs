@@ -1,12 +1,11 @@
 ﻿using System.IO;
 using System.Windows.Media.Imaging;
-using Windows.Services.Store;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace KioskBrowser;
 
-public partial class MainViewModel(Action close) : ObservableObject
+public partial class MainViewModel(Action close, NavigationService navigationService) : ObservableObject
 {
     private readonly StoreUpdateHelper _storeUpdateHelper = new();
     
@@ -29,7 +28,7 @@ public partial class MainViewModel(Action close) : ObservableObject
     [RelayCommand]
     private void ShowAboutPage()
     {
-        
+        navigationService.Navigate<AboutPage>();
     }
 
     public bool RefreshContentEnabled { get; set; }

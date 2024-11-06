@@ -3,10 +3,94 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="clr-namespace:KioskBrowser"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       mc:Ignorable="d"
-      Title="AboutPage" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+      Background="{DynamicResource WindowBrush}"
+      Title="AboutPage">
+    <StackPanel Orientation="Vertical">
+        <!-- Navigation -->
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <ui:Button Appearance="Transparent" BorderThickness="0" CornerRadius="0"
+                           Click="OnGoToMainPage" Margin="0 0 10 0" VerticalAlignment="Center">
+                    <ui:SymbolIcon
+                        Filled="True"
+                        FontSize="24"
+                        Symbol="ArrowLeft24" />
+                </ui:Button>
+                <ui:TextBlock Text="About" FontTypography="Title" TextAlignment="Center" Foreground="{ui:ThemeResource TextFillColorPrimaryBrush}" />
+            </StackPanel>
+        </StackPanel>
+
+        <Border Padding="20" Margin="0" CornerRadius="20 0 0 0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Header  -->
+                <Border
+                    Grid.Row="0"
+                    Height="200"
+                    CornerRadius="8">
+                    <Border.Background>
+                        <ImageBrush
+                            ImageSource="pack://application:,,,/Images/about-heading.jpg"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Stretch="UniformToFill" />
+                    </Border.Background>
+                    <Border CornerRadius="8">
+                        <Border.Background>
+                            <RadialGradientBrush>
+                                <GradientStop Offset="0" Color="#1F000000" />
+                                <GradientStop Offset="1" Color="#4F000000" />
+                            </RadialGradientBrush>
+                        </Border.Background>
+                        <Grid>
+                            <StackPanel
+                                Margin="48,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Background="Transparent">
+                                <ui:TextBlock
+                                    FontTypography="Title"
+                                    Foreground="#FFFFFF"
+                                    Text="Swift Kiosk Browser" />
+                                <ui:TextBlock
+                                    FontTypography="Subtitle"
+                                    Foreground="#B7FFFFFF"
+                                    Text="Experience the Web Without Borders" />
+                                <StackPanel Orientation="Horizontal">
+                                    <ui:HyperlinkButton Appearance="Transparent"
+                                                        HorizontalAlignment="Right"
+                                                        Content="GitHub"
+                                                        Foreground="#95e2f5"
+                                                        Margin="-10 5 0 0"
+                                                        NavigateUri="https://github.com/mortenbrudvik/KioskBrowser"
+                                                        ToolTip="Release notes" />
+
+                                    <ui:HyperlinkButton Appearance="Transparent"
+                                                        HorizontalAlignment="Right"
+                                                        Margin="20 5 0 0"
+                                                        Foreground="#95e2f5"
+                                                        Content="Microsoft Store"
+                                                        NavigateUri="ms-windows-store://pdp/?ProductId=9NT0K2DFKHW8"
+                                                        ToolTip="Release notes" />
+
+                                </StackPanel>
+                            </StackPanel>
+                            <ui:TextBlock
+                                Margin="12"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                FontTypography="Caption"
+                                Foreground="#57FFFFFF"
+                                Text="©️ Morten Brudvik" />
+                        </Grid>
+                    </Border>
+                </Border>
+            </Grid>
+        </Border>
+    </StackPanel>
 </Page>

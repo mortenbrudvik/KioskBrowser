@@ -126,8 +126,10 @@
                                     FontTypography="BodyStrong"
                                     Margin="5 0 5 5"
                                     Text="{Binding UpdateAvailableText}" />
-
-
+                                
+                                <ui:Button Grid.Row="1" Grid.Column="1" Content="Update" HorizontalAlignment="Right"
+                                           IsEnabled="{Binding IsUpdateAvailable}"
+                                           Click="OnUpdate" />
                                 
                             </Grid>
                         </ui:CardControl.Header>

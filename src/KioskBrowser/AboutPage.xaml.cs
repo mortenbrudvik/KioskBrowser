@@ -14,13 +14,18 @@ public partial class AboutPage : Page
         DataContext = this;
         InitializeComponent();
     }
-
+    
+    public string CurrentVersionText => "Swift Kiosk Browser " + AppSettings.Version;
+    public bool IsUpdateAvailable => _storeUpdateHelper.IsUpdateAvailable();
+    public string UpdateAvailableText => IsUpdateAvailable ? "An update is available" : "You are up to date";
+    
     private void OnGoToMainPage(object sender, RoutedEventArgs e)
     {
         _navigationService.Navigate<BrowserPage>();
     }
 
-    public string CurrentVersionText => "Swift Kiosk Browser " + AppSettings.Version;
-
-    public string UpdateAvailableText => _storeUpdateHelper.IsUpdateAvailable() ? "An update is available" : "You are up to date";
+    private async void OnUpdate(object sender, RoutedEventArgs e)
+    {
+        await _storeUpdateHelper.DownloadAndInstallAllUpdatesAsync();
+    }
 }

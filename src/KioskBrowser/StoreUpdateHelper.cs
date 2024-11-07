@@ -34,27 +34,26 @@ public class StoreUpdateHelper
 
         // Get the updates that are available.
         IReadOnlyList<StorePackageUpdate> updates = await _context.GetAppAndOptionalStorePackageUpdatesAsync();
+
+        if (!updates.Any()) return false;
         
-        if (updates.Any())
+        Log("Download Updates.");
+        var downloaded = await DownloadPackageUpdatesAsync(updates);
+
+        if (downloaded)
         {
-            Log("Download Updates.");
-            var downloaded = await DownloadPackageUpdatesAsync(updates);
+            Log("Install Updates.");
+            var installed = await InstallPackageUpdatesAsync(updates);
 
-            if (downloaded)
+            if (!installed)
             {
-                Log("Install Updates.");
-                var installed = await InstallPackageUpdatesAsync(updates);
-
-                if (!installed)
-                {
-                    Log("Failed to install update.");
-                }
-                
-                return !installed;
+                Log("Failed to install update.");
             }
-
-            Log("Failed to download updates.");
+                
+            return !installed;
         }
+
+        Log("Failed to download updates.");
 
         return false;
     }
@@ -129,24 +128,24 @@ public class StoreUpdateHelper
     /// <param name="updateStatuses">The statuses of the updates after the operation.</param>
     private void HandleFailedUpdates(IEnumerable<StorePackageUpdate> updates, IEnumerable<StorePackageUpdateStatus> updateStatuses)
     {
+        Log("Handling failed updates.");
         var failedUpdates = updateStatuses
             .Where(status => status.PackageUpdateState != StorePackageUpdateState.Completed)
             .ToList();
 
-        if (failedUpdates.Any())
-        {
-            var failedMandatoryUpdates = updates
-                .Where(u => u.Mandatory)
-                .Join(failedUpdates, u => u.Package.Id.FamilyName, f => f.PackageFamilyName, (u, f) => u);
+        if (!failedUpdates.Any()) return;
+        
+        var failedMandatoryUpdates = updates
+            .Where(u => u.Mandatory)
+            .Join(failedUpdates, u => u.Package.Id.FamilyName, f => f.PackageFamilyName, (u, f) => u);
 
-            if (failedMandatoryUpdates.Any())
-            {
-                Log("Mandatory updates failed to install.");
-            }
-            else
-            {
-                Log("Non-mandatory updates failed to install.");
-            }
+        if (failedMandatoryUpdates.Any())
+        {
+            Log("Mandatory updates failed to install.");
+        }
+        else
+        {
+            Log("Non-mandatory updates failed to install.");
         }
     }
     

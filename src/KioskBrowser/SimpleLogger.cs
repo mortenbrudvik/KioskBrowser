@@ -4,15 +4,14 @@ namespace KioskBrowser;
 
 public static class SimpleLogger
 {
-    private static readonly object LockObj = new();
+    private static readonly Mutex LogMutex = new(false, "Global-KioskBrowser-SimpleLoggerMutex");
     private static readonly string InstanceId = Guid.NewGuid().ToString();
 
     static SimpleLogger()
     {
         try
         {
-            // Ensure the directory exists
-            Directory.CreateDirectory(LogDirectoryPath);
+            EnsureLogDirectoryExists();
             
             CleanupOldLogs();
         }
@@ -21,7 +20,7 @@ public static class SimpleLogger
             Console.WriteLine("Failed to create log directory: " + e.Message);
         }
     }
-    
+
     public static string LogDirectoryPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Swift KioskBrowser");
 
     public static void LogError(Exception ex, string additionalInfo = "")
@@ -38,15 +37,28 @@ public static class SimpleLogger
 
     private static void WriteLog(string message)
     {
-        lock (LockObj)
+        var hasHandle = false;
+        try
         {
-            try
+            hasHandle = LogMutex.WaitOne(5000);
+            if (hasHandle)
             {
                 File.AppendAllText(GetDailyLogFilePath(), message);
             }
-            catch (IOException ioEx)
+            else
             {
-                Console.WriteLine("Logging failed: " + ioEx.Message);
+                Console.WriteLine("Failed to acquire mutex for logging within timeout period.");
+            }
+        }
+        catch (IOException ioEx)
+        {
+            Console.WriteLine("Logging failed: " + ioEx.Message);
+        }
+        finally
+        {
+            if (hasHandle)
+            {
+                LogMutex.ReleaseMutex();
             }
         }
     }
@@ -79,4 +91,6 @@ public static class SimpleLogger
             Console.WriteLine("Cleanup of old logs failed: " + ex.Message);
         }
     }
+    
+    private static void EnsureLogDirectoryExists() => Directory.CreateDirectory(LogDirectoryPath);
 }

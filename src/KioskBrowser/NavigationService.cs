@@ -5,7 +5,7 @@ namespace KioskBrowser;
 
 public class NavigationService
 {
-    private Frame _navigationFrame;
+    private Frame _navigationFrame = null!;
     private readonly Dictionary<Type, object> _pages = new();
     
     public void AddPage<TPage>(TPage page) where TPage : Page

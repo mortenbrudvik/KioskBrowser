@@ -4,6 +4,9 @@ namespace KioskBrowser;
 
 public class Options
 {
+    [Value(0, MetaName = "url", Required = false, HelpText = "URL to open in the browser")]
+    public string? Url { get; set; }
+    
     [Option('t', "enable-titlebar", Required = false, Default = false, HelpText = "Enable Title bar")]
     public bool EnableTitlebar { get; set; }
         

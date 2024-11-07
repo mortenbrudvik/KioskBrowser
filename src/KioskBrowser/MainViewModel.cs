@@ -2,6 +2,7 @@
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using KioskBrowser.Common;
 
 namespace KioskBrowser;
 
@@ -30,8 +31,31 @@ public partial class MainViewModel(Action close, NavigationService navigationSer
     {
         navigationService.Navigate<AboutPage>();
     }
+    
+    public void Initialize(Options options)
+    {
+        Url = options.Url ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "readme.html");;
+        TitlebarEnabled = options.Url is not null && options.EnableTitlebar;
+        RefreshContentEnabled = options.EnableAutomaticContentRefresh;
+        RefreshContentIntervalInSeconds = Math.Max(Math.Min(options.ContentRefreshIntervalInSeconds, 3600), 10);
+        
+        SetIcons(Url);
+    }
+    
+    private void SetIcons(string url)
+    {
+        if (!FileUtils.IsFilePath(url)) return;
+        
+        var image = FileUtils.GetFileIcon(url);
+        if(image == null) return;
+            
+        TitlebarIcon = image;
+        TaskbarOverlayImage = image;
+    }
 
-    public bool RefreshContentEnabled { get; set; }
-    public double RefreshContentIntervalInSeconds { get; set; }
-    public bool TitlebarEnabled { get; set; }
+    public bool RefreshContentEnabled { get; private set; }
+    public double RefreshContentIntervalInSeconds { get; private set; }
+    public bool TitlebarEnabled { get; private set; }
+    
+    public string Url { get; set; }
 }

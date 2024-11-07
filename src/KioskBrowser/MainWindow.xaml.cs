@@ -49,16 +49,14 @@ public partial class MainWindow
     {
         base.OnInitialized(e);
 
-        var args = Environment.GetCommandLineArgs();
+        var args = Environment.GetCommandLineArgs().Skip(1);
         Parser.Default.ParseArguments<Options>(args)
             .WithParsed(o =>
             {
                 if(!o.EnableTitlebar)
                     Titlebar.Height = 0;
-
-                _viewModel.TitlebarEnabled = o.EnableTitlebar;
-                _viewModel.RefreshContentEnabled = o.EnableAutomaticContentRefresh;
-                _viewModel.RefreshContentIntervalInSeconds = Math.Max(Math.Min(o.ContentRefreshIntervalInSeconds, 3600), 10);
+                
+                _viewModel.Initialize(o);
             });
     }
 
@@ -73,22 +71,12 @@ public partial class MainWindow
     {
         if(_webView.CoreWebView2 != null)
             return;
-        
-        var args = Environment.GetCommandLineArgs();
-        
-        var readmeFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "readme.html");
-
-        var url = args.Length < 2 ? readmeFilePath : args[1];
     
         var environment = await CoreWebView2Environment.CreateAsync(null, _viewModel.CacheFolderPath);
         await _webView.EnsureCoreWebView2Async(environment);
         
-        if(FileUtils.IsFilePath(url))
-        {
-            var image = FileUtils.GetFileIcon(url);
-            _viewModel.TitlebarIcon = image;
-            _viewModel.TaskbarOverlayImage = image;
-        }
+        if(_webView.CoreWebView2 == null)
+            throw new Exception("Failed to initialize WebView control. Please restart application.");
 
         _webView.CoreWebView2.DocumentTitleChanged += (_, _) =>
         {
@@ -109,7 +97,7 @@ public partial class MainWindow
             _viewModel.TaskbarOverlayImage = image;
         };
 
-        _webView.Source = new UriBuilder(url).Uri;
+        _webView.Source = new UriBuilder(_viewModel.Url).Uri;
 
         if (_viewModel.RefreshContentEnabled)
             StartAutomaticContentRefresh();

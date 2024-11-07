@@ -21,14 +21,8 @@ public partial class MainWindow
         _webView = new WebView2();
         
         _webView.Loaded += async (_, _) => await InitializeWebView();
-        
-        var browserPage = new BrowserPage(_webView);
-        var aboutPage = new AboutPage(_navigationService);
 
-        _navigationService.AddPage(browserPage);
-        _navigationService.AddPage(aboutPage);
-        
-        _viewModel = new MainViewModel(Close, _navigationService);
+        _viewModel = new MainViewModel(Close, _navigationService, _webView);
 
         InitializeComponent();
         
@@ -36,12 +30,7 @@ public partial class MainWindow
         
         _navigationService.SetNavigationFrame(MainFrame);
     }
-    
-    private new void Close()
-    {
-        if(!_viewModel.TitlebarEnabled)
-            base.Close();
-    }
+
 
     protected override void OnInitialized(EventArgs e)
     {
@@ -109,5 +98,11 @@ public partial class MainWindow
         _refreshContentTimer.Tick += (_, _) => _webView.Reload();
         _refreshContentTimer.Interval = TimeSpan.FromSeconds(_viewModel.RefreshContentIntervalInSeconds);
         _refreshContentTimer.Start();
+    }
+        
+    private new void Close()
+    {
+        if(!_viewModel.TitlebarEnabled)
+            base.Close();
     }
 }

@@ -3,10 +3,11 @@ using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KioskBrowser.Common;
+using Microsoft.Web.WebView2.Wpf;
 
 namespace KioskBrowser;
 
-public partial class MainViewModel(Action close, NavigationService navigationService) : ObservableObject
+public partial class MainViewModel(Action close, NavigationService navigationService, WebView2 webView) : ObservableObject
 {
     private readonly StoreUpdateHelper _storeUpdateHelper = new();
     
@@ -44,6 +45,17 @@ public partial class MainViewModel(Action close, NavigationService navigationSer
         RefreshContentIntervalInSeconds = Math.Max(Math.Min(options.ContentRefreshIntervalInSeconds, 3600), 10);
         
         SetIcons(Url);
+        
+        RegisterPages();
+    }
+
+    private void RegisterPages()
+    {
+        var browserPage = new BrowserPage(webView);
+        var aboutPage = new AboutPage(navigationService);
+
+        navigationService.AddPage(browserPage);
+        navigationService.AddPage(aboutPage);
     }
     
     private void SetIcons(string url)

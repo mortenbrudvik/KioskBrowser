@@ -1,15 +1,24 @@
 ﻿using System.IO;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KioskBrowser.Common;
+using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
 namespace KioskBrowser;
 
-public partial class MainViewModel(Action close, NavigationService navigationService, WebView2 webView) : ObservableObject
+public partial class MainViewModel(Action close, NavigationService navigationService) : ObservableObject
 {
     private readonly StoreUpdateHelper _storeUpdateHelper = new();
+    private readonly DispatcherTimer _refreshContentTimer = new();
+    private readonly WebView2 _webView = new();
+    
+    private string Url { get; set; } = default!;
+    private static string CacheFolderPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "KioskBrowser");
+    private bool RefreshContentEnabled { get; set; }
+    private double RefreshContentIntervalInSeconds { get; set; }
     
     [ObservableProperty]
     private string _title = "Kiosk Browser";
@@ -22,13 +31,17 @@ public partial class MainViewModel(Action close, NavigationService navigationSer
     
     [ObservableProperty] 
     private BitmapImage? _taskbarOverlayImage;
-    
-    public string CacheFolderPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "KioskBrowser");
+
+    public bool TitlebarEnabled { get; private set; } = true;
 
     public bool IsUpdateAvailable => false;//_storeUpdateHelper.IsUpdateAvailableAsync().Result;
     
     [RelayCommand]
-    private void Close() => close();
+    private void Close()
+    {
+        if (!TitlebarEnabled)
+            close();
+    }
 
     [RelayCommand]
     private void ShowAboutPage()
@@ -47,11 +60,49 @@ public partial class MainViewModel(Action close, NavigationService navigationSer
         SetIcons(Url);
         
         RegisterPages();
+        
+        _webView.Loaded += async (_, _) => await InitializeWebView();
+    }
+
+    private async Task InitializeWebView()
+    {
+        if(_webView.CoreWebView2 != null)
+            return;
+    
+        var environment = await CoreWebView2Environment.CreateAsync(null, CacheFolderPath);
+        await _webView.EnsureCoreWebView2Async(environment);
+        
+        if(_webView.CoreWebView2 == null)
+            throw new Exception("Failed to initialize WebView control. Please restart application.");
+
+        _webView.CoreWebView2.DocumentTitleChanged += (_, _) =>
+        {
+            var title = _webView.CoreWebView2.DocumentTitle;
+            if(!string.IsNullOrEmpty(title))
+                Title = title;
+        };
+
+        _webView.CoreWebView2.FaviconChanged += async (_, _) =>
+        {
+            var faviconUri = _webView.CoreWebView2.FaviconUri;
+            if (faviconUri == null) return;
+
+            var image = await FaviconIcon.DownloadAsync(faviconUri);
+            if (image == null) return;
+            
+            TitlebarIcon = image;
+            TaskbarOverlayImage = image;
+        };
+
+        _webView.Source = new UriBuilder(Url).Uri;
+
+        if (RefreshContentEnabled)
+            StartAutomaticContentRefresh();
     }
 
     private void RegisterPages()
     {
-        var browserPage = new BrowserPage(webView);
+        var browserPage = new BrowserPage(_webView);
         var aboutPage = new AboutPage(navigationService);
 
         navigationService.AddPage(browserPage);
@@ -68,10 +119,11 @@ public partial class MainViewModel(Action close, NavigationService navigationSer
         TitlebarIcon = image;
         TaskbarOverlayImage = image;
     }
-
-    public bool RefreshContentEnabled { get; private set; }
-    public double RefreshContentIntervalInSeconds { get; private set; }
-    public bool TitlebarEnabled { get; private set; } = true;
     
-    public string Url { get; set; }
+    private void StartAutomaticContentRefresh()
+    {
+        _refreshContentTimer.Tick += (_, _) => _webView.Reload();
+        _refreshContentTimer.Interval = TimeSpan.FromSeconds(RefreshContentIntervalInSeconds);
+        _refreshContentTimer.Start();
+    }
 }

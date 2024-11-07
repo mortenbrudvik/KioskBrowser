@@ -22,5 +22,5 @@ public partial class AboutPage : Page
 
     public string CurrentVersionText => "Swift Kiosk Browser " + AppSettings.Version;
 
-    public string UpdateAvailableText => _storeUpdateHelper.IsUpdateAvailableAsync().Result ? "An update is available" : "You are up to date";
+    public string UpdateAvailableText => _storeUpdateHelper.IsUpdateAvailable() ? "An update is available" : "You are up to date";
 }

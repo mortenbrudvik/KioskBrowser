@@ -10,11 +10,11 @@ public class StoreUpdateHelper
 {
     private readonly StoreContext _context = StoreContext.GetDefault();
 
-    public async Task<bool> IsUpdateAvailableAsync()
+    public bool IsUpdateAvailable()
     {
         try
         {
-            IReadOnlyList<StorePackageUpdate> updates = await _context.GetAppAndOptionalStorePackageUpdatesAsync();
+            IReadOnlyList<StorePackageUpdate> updates = _context.GetAppAndOptionalStorePackageUpdatesAsync().GetAwaiter().GetResult();
             return updates.Any();
         }
         catch (Exception e)
@@ -23,7 +23,7 @@ public class StoreUpdateHelper
         }
 
         return false;
-    } 
+    }
     
     /// <summary>
     /// Downloads and installs all available package updates in separate steps.

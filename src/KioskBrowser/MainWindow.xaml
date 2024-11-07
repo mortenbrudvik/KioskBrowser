@@ -30,7 +30,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <ui:TitleBar Title="{Binding Title}" Grid.Row="0" ShowMaximize="True" ShowMinimize="True" x:Name="Titlebar">
+            <ui:TitleBar Title="{Binding Title}" Height="{Binding TitlebarHeight}" Grid.Row="0" ShowMaximize="True" ShowMinimize="True">
                 <ui:TitleBar.Icon>
                     <ui:ImageIcon Source="{Binding TitlebarIcon}" />
                 </ui:TitleBar.Icon>

@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Windows;
-using System.Windows.Interop;
+﻿using System.Windows.Interop;
 using System.Windows.Threading;
 using CommandLine;
 using KioskBrowser.Common;
@@ -51,13 +49,7 @@ public partial class MainWindow
 
         var args = Environment.GetCommandLineArgs().Skip(1);
         Parser.Default.ParseArguments<Options>(args)
-            .WithParsed(o =>
-            {
-                if(!o.EnableTitlebar)
-                    Titlebar.Height = 0;
-                
-                _viewModel.Initialize(o);
-            });
+            .WithParsed(o => _viewModel.Initialize(o));
     }
 
     protected override void OnContentRendered(EventArgs e)

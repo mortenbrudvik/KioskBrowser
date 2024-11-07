@@ -14,6 +14,9 @@ public partial class MainViewModel(Action close, NavigationService navigationSer
     private string _title = "Kiosk Browser";
     
     [ObservableProperty]
+    private int _titlebarHeight;
+
+    [ObservableProperty]
     private BitmapImage _titlebarIcon = new(new Uri("pack://application:,,,/Images/app.png"));
     
     [ObservableProperty] 
@@ -36,6 +39,7 @@ public partial class MainViewModel(Action close, NavigationService navigationSer
     {
         Url = options.Url ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "readme.html");;
         TitlebarEnabled = options.Url is not null && options.EnableTitlebar;
+        TitlebarHeight = options.EnableTitlebar ? 48 : 0;
         RefreshContentEnabled = options.EnableAutomaticContentRefresh;
         RefreshContentIntervalInSeconds = Math.Max(Math.Min(options.ContentRefreshIntervalInSeconds, 3600), 10);
         
@@ -55,7 +59,7 @@ public partial class MainViewModel(Action close, NavigationService navigationSer
 
     public bool RefreshContentEnabled { get; private set; }
     public double RefreshContentIntervalInSeconds { get; private set; }
-    public bool TitlebarEnabled { get; private set; }
+    public bool TitlebarEnabled { get; private set; } = true;
     
     public string Url { get; set; }
 }

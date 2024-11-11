@@ -21,7 +21,7 @@ public static class SimpleLogger
         }
     }
 
-    public static string LogDirectoryPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Swift KioskBrowser");
+    public static string LogDirectoryPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"Accelerated Development", "Swift KioskBrowser");
 
     public static void LogError(Exception ex, string additionalInfo = "")
     {

@@ -12,7 +12,7 @@
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
                 <ui:Button Appearance="Transparent" BorderThickness="0" CornerRadius="0"
-                           Click="OnGoToMainPage" Margin="0 0 10 0" VerticalAlignment="Center">
+                           Command="{Binding NavigateToMainPageCommand}" Margin="0 0 10 0" VerticalAlignment="Center">
                     <ui:SymbolIcon
                         Filled="True"
                         FontSize="24"
@@ -113,27 +113,40 @@
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
+                                
+                                <ui:Button Margin="10 0" 
+                                           Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
+                                           FontSize="32"
+                                           BorderThickness="0"
+                                           Icon="{ui:SymbolIcon ArrowCounterclockwise48}"
+                                           Appearance="Transparent"
+                                           Command="{Binding CheckForUpdateCommand}" />
+                                
                                 <ui:TextBlock
-                                    Grid.Row="0" Grid.Column="0"
+                                    Grid.Row="0" Grid.Column="1"
                                     FontTypography="BodyStrong"
                                     Margin="5 0 5 5"
                                     Text="{Binding CurrentVersionText}" />
 
                                 <ui:TextBlock
-                                    Grid.Row="1" Grid.Column="0"
+                                    Grid.Row="1" Grid.Column="1"
                                     FontTypography="BodyStrong"
                                     Margin="5 0 5 5"
                                     Text="{Binding UpdateAvailableText}" />
                                 
-                                <ui:Button Grid.Row="1" Grid.Column="1" Content="Update" HorizontalAlignment="Right"
-                                           IsEnabled="{Binding IsUpdateAvailable}"
-                                           Click="OnUpdate" />
+                                <ui:Button Grid.Row="1" Grid.Column="2" Content="Update" HorizontalAlignment="Right"
+                                           Command="{Binding DownloadInstallerAndUpdateCommand}" />
                                 
                             </Grid>
                         </ui:CardControl.Header>
                     </ui:CardControl>
+                    
+                    <!-- Info box  -->
+                    <ui:InfoBar Title="{Binding UpdateCheckMessage}" Message="" Severity="{Binding UpdateCheckSeverity}" IsOpen="{Binding IsUpdateCheck}" IsClosable="False" />
+
                 </StackPanel>
 
             </Grid>

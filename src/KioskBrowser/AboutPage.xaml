@@ -65,19 +65,17 @@
                                 <StackPanel Orientation="Horizontal">
                                     <ui:HyperlinkButton Appearance="Transparent"
                                                         HorizontalAlignment="Right"
-                                                        Content="GitHub"
+                                                        Content="GitHub Repository"
                                                         Foreground="#95e2f5"
                                                         Margin="-10 5 0 0"
-                                                        NavigateUri="https://github.com/mortenbrudvik/KioskBrowser"
-                                                        ToolTip="Release notes" />
+                                                        NavigateUri="https://github.com/mortenbrudvik/KioskBrowser"/>
 
                                     <ui:HyperlinkButton Appearance="Transparent"
                                                         HorizontalAlignment="Right"
                                                         Margin="20 5 0 0"
                                                         Foreground="#95e2f5"
                                                         Content="Microsoft Store"
-                                                        NavigateUri="ms-windows-store://pdp/?ProductId=9NT0K2DFKHW8"
-                                                        ToolTip="Release notes" />
+                                                        NavigateUri="ms-windows-store://pdp/?ProductId=9NT0K2DFKHW8"/>
 
                                 </StackPanel>
                             </StackPanel>
@@ -146,6 +144,23 @@
                     
                     <!-- Info box  -->
                     <ui:InfoBar Title="{Binding UpdateCheckMessage}" Message="" Severity="{Binding UpdateCheckSeverity}" IsOpen="{Binding IsUpdateCheck}" IsClosable="False" />
+                    
+                    <!-- Related Information -->
+                    <ui:TextBlock
+                        Margin="5,20,0,8"
+                        FontTypography="BodyStrong"
+                        Foreground="{ui:ThemeResource TextFillColorPrimaryBrush}"
+                        Text="Related information" />
+
+                    <StackPanel Orientation="Horizontal">
+                        <ui:HyperlinkButton Appearance="Transparent"
+                                            Padding="5 3"
+                                            Margin="0 0 20 0"
+                                            FontSize="22"
+                                            Content="Privacy statement"
+                                            NavigateUri="https://github.com/mortenbrudvik/KioskBrowser/blob/main/privacy_policy.md"
+                        />
+                    </StackPanel>
 
                 </StackPanel>
 

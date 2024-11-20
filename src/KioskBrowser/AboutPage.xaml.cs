@@ -4,9 +4,20 @@ namespace KioskBrowser;
 
 public partial class AboutPage : Page
 {
-    public AboutPage(NavigationService navigationService)
+    private readonly AboutViewModel _viewModel;
+
+    public AboutPage(NavigationService navigationService, ILogger logger)
     {
-        DataContext = new AboutViewModel(new StoreUpdateHelper(), navigationService);
+        _viewModel = new AboutViewModel(navigationService, logger);
+        DataContext = _viewModel;
+            
         InitializeComponent();
+    }
+
+    protected override async void OnInitialized(EventArgs e)
+    {
+        base.OnInitialized(e);
+        
+        await _viewModel.InitializeAsync();
     }
 }

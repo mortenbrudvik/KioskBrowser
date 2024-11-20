@@ -3,16 +3,15 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace KioskBrowser;
 
-public partial class AboutViewModel : ObservableObject
+public partial class AboutViewModel(
+    NavigationService navigationService,
+    ILogger logger
+    ) : ObservableObject
 {
-    private readonly StoreUpdateHelper _storeUpdateHelper;
-    private readonly NavigationService _navigationService;
-
-    public AboutViewModel(StoreUpdateHelper storeUpdateHelper, NavigationService navigationService)
+    public async Task InitializeAsync()
     {
-        _storeUpdateHelper = storeUpdateHelper;
-        _navigationService = navigationService;
-        IsUpdateAvailable = _storeUpdateHelper!.IsUpdateAvailable();;
+        var storeUpdateHelper = new StoreUpdateHelper(logger);
+        IsUpdateAvailable = await storeUpdateHelper.IsUpdateAvailableAsync();
         UpdateAvailableText = IsUpdateAvailable ? "An update is available" : "You are up to date";
     }
     
@@ -29,9 +28,10 @@ public partial class AboutViewModel : ObservableObject
     [ObservableProperty] private string _isUpdateCheck = "False";
     
     [RelayCommand]
-    private void CheckForUpdate()
+    private async Task CheckForUpdate()
     {
-        IsUpdateAvailable = _storeUpdateHelper.IsUpdateAvailable();
+        var storeUpdateHelper = new StoreUpdateHelper(logger);
+        IsUpdateAvailable = await storeUpdateHelper.IsUpdateAvailableAsync();
         
         if(IsUpdateAvailable)
         {
@@ -46,7 +46,7 @@ public partial class AboutViewModel : ObservableObject
     [RelayCommand]
     private void NavigateToMainPage()
     {
-        _navigationService.Navigate<BrowserPage>();
+        navigationService.Navigate<BrowserPage>();
     }
     
     [RelayCommand]
@@ -54,7 +54,8 @@ public partial class AboutViewModel : ObservableObject
     {
         try
         {
-            var success = await _storeUpdateHelper.DownloadAndInstallAllUpdatesAsync();
+            var storeUpdateHelper = new StoreUpdateHelper(logger);
+            var success = await storeUpdateHelper.DownloadAndInstallAllUpdatesAsync();
             if (success)
             {
                 ShowUpdateInfoBox("Update installed successfully. Restart the application to apply changes.", "Success");
@@ -68,7 +69,6 @@ public partial class AboutViewModel : ObservableObject
         {
             ShowUpdateInfoBox("An error occurred while trying to install update", "Error");
         }
-
     }
     
     private void ShowUpdateInfoBox(string message, string severity)

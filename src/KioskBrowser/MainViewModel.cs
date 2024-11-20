@@ -9,9 +9,8 @@ using Microsoft.Web.WebView2.Wpf;
 
 namespace KioskBrowser;
 
-public partial class MainViewModel(Action close, NavigationService navigationService) : ObservableObject
+public partial class MainViewModel(Action close, NavigationService navigationService, ILogger logger, UpdateCheckerService updateCheckerService) : ObservableObject
 {
-    private readonly StoreUpdateHelper _storeUpdateHelper = new();
     private readonly DispatcherTimer _refreshContentTimer = new();
     private readonly WebView2 _webView = new();
     
@@ -103,7 +102,7 @@ public partial class MainViewModel(Action close, NavigationService navigationSer
     private void RegisterPages()
     {
         var browserPage = new BrowserPage(_webView);
-        var aboutPage = new AboutPage(navigationService);
+        var aboutPage = new AboutPage(navigationService, logger);
 
         navigationService.AddPage(browserPage);
         navigationService.AddPage(aboutPage);

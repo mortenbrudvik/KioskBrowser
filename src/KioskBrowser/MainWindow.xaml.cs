@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Interop;
+﻿using System.Windows.Interop;
 using CommandLine;
 using static KioskBrowser.Native.ShellHelper;
 
@@ -9,37 +8,16 @@ public partial class MainWindow
 {
     private readonly MainViewModel _viewModel;
     private readonly NavigationService _navigationService;
-    private readonly UpdateCheckerService _updateCheckerService;
 
     public MainWindow()
     {
         _navigationService = new NavigationService();
-        var logger = new LoggerService();
-        _updateCheckerService = new UpdateCheckerService(logger);
-        _updateCheckerService.AppUpdated += UpdateCheckerService_AppUpdated;
-        _updateCheckerService.Start(10);
+        var storeService = new StoreService();
         
-        _viewModel = new MainViewModel(Close, _navigationService, logger, _updateCheckerService);
+        _viewModel = new MainViewModel(Close, _navigationService, storeService);
         DataContext = _viewModel;
         
         InitializeComponent();
-    }
-    
-    private void UpdateCheckerService_AppUpdated(object? sender, EventArgs e)
-    {
-        Dispatcher.Invoke( () =>
-        {
-            var result = MessageBox.Show(
-                "A new version of the application has been installed. Do you want to restart now to apply updates?",
-                "Update Available",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Information);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                AppRestartHelper.RestartApplication();
-            }
-        });
     }
 
     protected override void OnInitialized(EventArgs e)

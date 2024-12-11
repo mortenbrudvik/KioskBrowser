@@ -9,7 +9,7 @@ using Microsoft.Web.WebView2.Wpf;
 
 namespace KioskBrowser;
 
-public partial class MainViewModel(Action close, NavigationService navigationService, ILogger logger, UpdateCheckerService updateCheckerService) : ObservableObject
+public partial class MainViewModel(Action close, NavigationService navigationService, StoreService storeService) : ObservableObject
 {
     private readonly DispatcherTimer _refreshContentTimer = new();
     private readonly WebView2 _webView = new();
@@ -33,7 +33,7 @@ public partial class MainViewModel(Action close, NavigationService navigationSer
 
     public bool TitlebarEnabled { get; private set; } = true;
 
-    public bool IsUpdateAvailable => false;//_storeUpdateHelper.IsUpdateAvailableAsync().Result;
+    public bool IsUpdateAvailable => storeService.IsUpdateAvailableAsync().Result;
     
     [RelayCommand]
     private void Close()
@@ -68,7 +68,10 @@ public partial class MainViewModel(Action close, NavigationService navigationSer
         if(_webView.CoreWebView2 != null)
             return;
     
-        var environment = await CoreWebView2Environment.CreateAsync(null, CacheFolderPath);
+        var environment = await CoreWebView2Environment.CreateAsync(null, CacheFolderPath, new CoreWebView2EnvironmentOptions
+        {
+            AllowSingleSignOnUsingOSPrimaryAccount = true
+        });
         await _webView.EnsureCoreWebView2Async(environment);
         
         if(_webView.CoreWebView2 == null)
@@ -102,7 +105,7 @@ public partial class MainViewModel(Action close, NavigationService navigationSer
     private void RegisterPages()
     {
         var browserPage = new BrowserPage(_webView);
-        var aboutPage = new AboutPage(navigationService, logger);
+        var aboutPage = new AboutPage(navigationService, storeService);
 
         navigationService.AddPage(browserPage);
         navigationService.AddPage(aboutPage);

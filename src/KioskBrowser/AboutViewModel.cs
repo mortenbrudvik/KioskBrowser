@@ -3,15 +3,11 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace KioskBrowser;
 
-public partial class AboutViewModel(
-    NavigationService navigationService,
-    ILogger logger
-    ) : ObservableObject
+public partial class AboutViewModel(NavigationService navigationService, StoreService storeService) : ObservableObject
 {
     public async Task InitializeAsync()
     {
-        var storeUpdateHelper = new StoreUpdateHelper(logger);
-        IsUpdateAvailable = await storeUpdateHelper.IsUpdateAvailableAsync();
+        IsUpdateAvailable = await storeService.IsUpdateAvailableAsync();
         UpdateAvailableText = IsUpdateAvailable ? "An update is available" : "You are up to date";
     }
     
@@ -30,8 +26,7 @@ public partial class AboutViewModel(
     [RelayCommand]
     private async Task CheckForUpdate()
     {
-        var storeUpdateHelper = new StoreUpdateHelper(logger);
-        IsUpdateAvailable = await storeUpdateHelper.IsUpdateAvailableAsync();
+        IsUpdateAvailable = await storeService.IsUpdateAvailableAsync();
         
         if(IsUpdateAvailable)
         {
@@ -47,28 +42,6 @@ public partial class AboutViewModel(
     private void NavigateToMainPage()
     {
         navigationService.Navigate<BrowserPage>();
-    }
-    
-    [RelayCommand]
-    private async Task DownloadInstallerAndUpdate()
-    {
-        try
-        {
-            var storeUpdateHelper = new StoreUpdateHelper(logger);
-            var success = await storeUpdateHelper.DownloadAndInstallAllUpdatesAsync();
-            if (success)
-            {
-                ShowUpdateInfoBox("Update installed successfully. Restart the application to apply changes.", "Success");
-            }
-            else
-            {
-                ShowUpdateInfoBox("Failed to install update. Please try again later.", "Success");
-            }
-        }
-        catch (Exception e)
-        {
-            ShowUpdateInfoBox("An error occurred while trying to install update", "Error");
-        }
     }
     
     private void ShowUpdateInfoBox(string message, string severity)

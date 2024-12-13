@@ -30,11 +30,17 @@ public partial class MainViewModel(Action close, NavigationService navigationSer
     
     [ObservableProperty] 
     private BitmapImage? _taskbarOverlayImage;
+    
+    [ObservableProperty]
+    private bool _isUpdateAvailable = false;
+    
+    public async Task CheckForUpdateAsync()
+    {
+        IsUpdateAvailable = await storeService.IsUpdateAvailableAsync();
+    }
 
     public bool TitlebarEnabled { get; private set; } = true;
 
-    public bool IsUpdateAvailable => storeService.IsUpdateAvailableAsync().Result;
-    
     [RelayCommand]
     private void Close()
     {

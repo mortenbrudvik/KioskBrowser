@@ -17,7 +17,7 @@ using static System.Console;
 
 // Versioning (major.minor.patch.build)
 var productVersion = "1.3";
-var patchNumber = "9";
+var patchNumber = "11";
 var buildNumber = "0"; 
 var assemblyVersion = $"{productVersion}.{patchNumber}"; // Internal to the CLR, is not exposed
 var assemblyFileVersion = $"{productVersion}.{patchNumber}.{buildNumber}"; // Important for the deployment and windows to differentiate the files

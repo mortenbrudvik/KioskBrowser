@@ -18,6 +18,11 @@ public partial class MainWindow
         DataContext = _viewModel;
         
         InitializeComponent();
+
+        Loaded += async (_, _) =>
+        {
+            await _viewModel.CheckForUpdateAsync();
+        };
     }
 
     protected override void OnInitialized(EventArgs e)

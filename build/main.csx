@@ -23,9 +23,13 @@ var assemblyVersion = $"{productVersion}.{patchNumber}"; // Internal to the CLR,
 var assemblyFileVersion = $"{productVersion}.{patchNumber}.{buildNumber}"; // Important for the deployment and windows to differentiate the files
 var assemblyInformationalVersion = $"{productVersion} Release"; // Product version - the version that you would use on your website etc.
 
-var buildDir = "KioskBrowser";
-var artifactsDir = "artifacts";
-var packageFileName = $"SwiftKioskBrowser_{assemblyFileVersion}.msix";
+string currentDir = Directory.GetCurrentDirectory();
+string artifactsDir = Path.Combine(currentDir, "artifacts");
+string assetsDir = Path.Combine(currentDir, "assets");
+string buildDir = Path.Combine(artifactsDir, "KioskBrowser");
+
+string packageFileName = $"SwiftKioskBrowser_{assemblyFileVersion}.msix";
+string packageFilePath = Path.Combine(artifactsDir, packageFileName);
 
 ////////////////////////////////////////////////////////////////////////////////
 // OPTIONS
@@ -59,20 +63,24 @@ Target("build-binaries", DependsOn("clean-solution"), () => {
     Run("dotnet", $@"publish ..\ -c Release -r win-x64 --self-contained true -o {buildDir} /p:FileVersion={assemblyFileVersion} /p:AssemblyVersion={assemblyVersion} /p:InformationalVersion=""{assemblyInformationalVersion}"" ");
 });
 
-Target("update-package-manifest",
+Target("configure-package",
     DependsOn("build-binaries"),
     () => {
-        string manifestPath = Path.Combine(Directory.GetCurrentDirectory(),"AppxManifest.xml");
+        WriteLine("Copy package assets to artifacts");
+        Run("xcopy", $"\"{assetsDir}\" \"{artifactsDir}\" /E /I /Y");
+        
+        WriteLine("Update package manifest"); 
+        string manifestPath = Path.Combine(artifactsDir,"AppxManifest.xml");
         Run("powershell.exe", $"\".\\scripts\\update-package-manifest.ps1\" -manifestPath \"{manifestPath}\" -newVersion \"{assemblyFileVersion}\" -identityName \"{options.IdentityName}\" -identityPublisher \"{options.IdentityPublisher}\" " );
     }
 ); 
 
-Target("build-msix", DependsOn("update-package-manifest"), () => {
-    Run("MakeAppx.exe", $"pack /d . /p .\\{Path.Combine(artifactsDir, packageFileName)}");
+Target("build-msix", DependsOn("configure-package"), () => {
+    Run("MakeAppx.exe", $"pack /d \"{artifactsDir}\"  /p \"{packageFilePath}\"");
 });
 
 Target("sign-package", DependsOn("build-msix"), () => {
-    Run("signtool.exe", $"sign /fd SHA256 /a /n MortenBrudvik .\\{Path.Combine(artifactsDir, packageFileName)}");
+    Run("signtool.exe", $"sign /fd SHA256 /a /n MortenBrudvik {packageFilePath}");
 });
 
 ////////////////////////////////////////////////////////////////////////////////

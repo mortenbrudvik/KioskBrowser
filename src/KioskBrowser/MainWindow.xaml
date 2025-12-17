@@ -4,7 +4,6 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-                 xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
                  mc:Ignorable="d"
                  WindowBackdropType="Mica"
                  ExtendsContentIntoTitleBar="True"
@@ -34,7 +33,7 @@
                 <ui:TitleBar.Icon>
                     <ui:ImageIcon Source="{Binding TitlebarIcon}" />
                 </ui:TitleBar.Icon>
-                <ui:TitleBar.Header>
+                <ui:TitleBar.TrailingContent>
                     <Grid HorizontalAlignment="Right" VerticalAlignment="Top">
                         <ui:Button Height="30" Width="44" Icon="{ui:SymbolIcon Info24}"  Appearance="Transparent" BorderThickness="0" CornerRadius="0" Command="{Binding ShowAboutPageCommand}"
                                    ToolTip="About"
@@ -46,7 +45,7 @@
                                  Margin="5 8 7 5"
                                  Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BoolToVisibilityConverter}}" />
                     </Grid>
-                </ui:TitleBar.Header>
+                </ui:TitleBar.TrailingContent>
                 
             </ui:TitleBar>
 
